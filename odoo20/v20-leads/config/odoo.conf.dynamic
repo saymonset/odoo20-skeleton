@@ -25,4 +25,4 @@ logfile = /var/log/odoo/odoo.log
 log_level = info
 data_dir = /var/lib/odoo/.local/share/Odoo
 server_wide_modules = base,web
-without_demo = all
+without_demo = True
