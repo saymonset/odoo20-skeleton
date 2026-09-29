@@ -29,7 +29,7 @@ services:
     image: "odoo-pers:20"
     container_name: "odoo-20-web-leads"
     restart: unless-stopped
-    user: "1001:1001"
+    user: "1000:1000"  # uid host odoo: los bind mounts ya son su ownership, sin chown/sudo
     depends_on:
       db-leads:
         condition: service_healthy
