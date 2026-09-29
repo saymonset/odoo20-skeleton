@@ -36,8 +36,8 @@ services:
     networks:
       - odoo_network_20
     ports:
-      - "38069:8069"
-      - "38072:8072"
+      - "127.0.0.1:38069:8069"
+      - "127.0.0.1:38072:8072"
     volumes:
       - "./v20-leads/odoo-web-data:/var/lib/odoo"
       - "./v20-leads/config:/etc/odoo"
