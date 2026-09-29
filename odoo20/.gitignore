@@ -1,0 +1,19 @@
+# Secrets locales (nunca versionar contenido)
+secrets/*
+!secrets/.gitkeep
+
+# Datos runtime generados
+v20-leads/pgdata/
+v20-leads/logs/
+v20-leads/odoo-web-data/
+v20-leads/config/odoo.conf
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Temporales
+*.log
+*.bak
+*.tmp
+.DS_Store

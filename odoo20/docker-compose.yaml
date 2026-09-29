@@ -1,0 +1,63 @@
+services:
+  db-leads:
+    image: pgvector/pgvector:pg15
+    container_name: "odoo-db20-leads"
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: dbodoo20
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    command: ["postgres", "-c", "max_connections=200"]
+    ports:
+      - "127.0.0.1:5436:5432"
+    networks:
+      - odoo_network_20
+    volumes:
+      - "./v20-leads/pgdata/data:/var/lib/postgresql/data/pgdata"
+      - "./v20-leads/pgdata/init:/docker-entrypoint-initdb.d"
+    secrets:
+      - postgres_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d dbodoo20"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    stop_grace_period: 60s
+
+  web-leads:
+    image: "odoo-pers:20"
+    container_name: "odoo-20-web-leads"
+    restart: unless-stopped
+    user: "1001:1001"
+    depends_on:
+      db-leads:
+        condition: service_healthy
+    networks:
+      - odoo_network_20
+    ports:
+      - "38069:8069"
+      - "38072:8072"
+    volumes:
+      - "./v20-leads/odoo-web-data:/var/lib/odoo"
+      - "./v20-leads/config:/etc/odoo"
+      - "/home/odoo/lead/modulos_odoo_20/shared/extra/20.0:/opt/odoo/custom-addons/extra"
+      - "/home/odoo/lead/modulos_odoo_20/shared/oca/20.0:/opt/odoo/custom-addons/oca"
+      - "./v20-leads/logs:/var/log/odoo"
+    environment:
+      DB_HOST: db-leads
+      USER: odoo
+      DB_NAME: dbodoo20
+      POSTGRES_USER: odoo
+    secrets:
+      - postgres_password
+    stop_grace_period: 60s
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+
+networks:
+  odoo_network_20:
+    external: true
+    name: odoo_network_20
