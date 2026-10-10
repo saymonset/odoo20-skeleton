@@ -176,7 +176,7 @@
       "name": "Postgres PGVector Store1",
       "credentials": {
         "postgres": {
-          "id": "iYnqJj05kHZl1N0z",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres_odoo-db19-n8n"
         }
       }
@@ -257,7 +257,7 @@
       "name": "Asegurar extension pgvector",
       "credentials": {
         "postgres": {
-          "id": "iYnqJj05kHZl1N0z",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres_odoo-db19-n8n"
         }
       },
@@ -279,7 +279,7 @@
       "name": "Inicializar tablas RAG",
       "credentials": {
         "postgres": {
-          "id": "iYnqJj05kHZl1N0z",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres_odoo-db19-n8n"
         }
       }
@@ -300,7 +300,7 @@
       "name": "Limpiar base de conocimiento",
       "credentials": {
         "postgres": {
-          "id": "iYnqJj05kHZl1N0z",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres_odoo-db19-n8n"
         }
       }
@@ -579,7 +579,7 @@
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "iYnqJj05kHZl1N0z",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres_odoo-db19-n8n"
         }
       },
@@ -627,7 +627,7 @@
       "name": "Obtener carga previa (Ejecutamos query manualmente)",
       "credentials": {
         "postgres": {
-          "id": "iYnqJj05kHZl1N0z",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres_odoo-db19-n8n"
         }
       }
@@ -649,7 +649,7 @@
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "iYnqJj05kHZl1N0z",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres_odoo-db19-n8n"
         }
       }
@@ -682,7 +682,7 @@
       "name": "Postgres PGVector Store(BD Principal)",
       "credentials": {
         "postgres": {
-          "id": "iYnqJj05kHZl1N0z",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres_odoo-db19-n8n"
         }
       }
@@ -703,7 +703,7 @@
       "name": "Actualizar file_id en vectores(es el campo de referencia para saber si es modificaop o no con la ta)",
       "credentials": {
         "postgres": {
-          "id": "iYnqJj05kHZl1N0z",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres_odoo-db19-n8n"
         }
       }
@@ -1085,11 +1085,11 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "758c3dae-5837-4c2f-929e-a94625a50275",
+  "versionId": "50017fb5-64b3-5b35-9507-7df78bcd7cc4",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "ac8b8e9b824b3711008329bf41bf68736c3261debaa6dcb0eaceede9a0a7edac"
   },
-  "id": "TTcgud28HQDLlLhw",
+  "id": "aeI0tnPwNNehrjDZ",
   "tags": []
 }

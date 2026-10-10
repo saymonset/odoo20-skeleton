@@ -177,7 +177,7 @@
       "name": "Postgres PGVector Store1",
       "credentials": {
         "postgres": {
-          "id": "KTEgdnqa0zFjxO2W",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres account 2"
         }
       }
@@ -258,7 +258,7 @@
       "name": "Asegurar extension pgvector",
       "credentials": {
         "postgres": {
-          "id": "KTEgdnqa0zFjxO2W",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres account 2"
         }
       },
@@ -280,7 +280,7 @@
       "name": "Inicializar tablas RAG",
       "credentials": {
         "postgres": {
-          "id": "KTEgdnqa0zFjxO2W",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres account 2"
         }
       }
@@ -301,7 +301,7 @@
       "name": "Limpiar base de conocimiento",
       "credentials": {
         "postgres": {
-          "id": "KTEgdnqa0zFjxO2W",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres account 2"
         }
       }
@@ -580,7 +580,7 @@
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "KTEgdnqa0zFjxO2W",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres account 2"
         }
       },
@@ -628,7 +628,7 @@
       "name": "Obtener carga previa (Ejecutamos query manualmente)",
       "credentials": {
         "postgres": {
-          "id": "KTEgdnqa0zFjxO2W",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres account 2"
         }
       }
@@ -650,7 +650,7 @@
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "KTEgdnqa0zFjxO2W",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres account 2"
         }
       }
@@ -683,7 +683,7 @@
       "name": "Postgres PGVector Store(BD Principal)",
       "credentials": {
         "postgres": {
-          "id": "KTEgdnqa0zFjxO2W",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres account 2"
         }
       }
@@ -704,7 +704,7 @@
       "name": "Actualizar file_id en vectores(es el campo de referencia para saber si es modificaop o no con la ta)",
       "credentials": {
         "postgres": {
-          "id": "KTEgdnqa0zFjxO2W",
+          "id": "euw8jaypF1Zw27S6",
           "name": "Postgres account 2"
         }
       }
@@ -1086,11 +1086,11 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "dd486cc0-b09d-4fa9-9c0a-dc7457d95094",
+  "versionId": "c751a9c6-76b7-57a3-b609-828f3e91de29",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "ac8b8e9b824b3711008329bf41bf68736c3261debaa6dcb0eaceede9a0a7edac"
   },
-  "id": "b3pXFaiSF5Off15t",
+  "id": "ToLF99PS4HEOnfHV",
   "tags": []
 }

@@ -69,6 +69,35 @@ el prefijo `127.0.0.1:` de los `ports` de `docker-compose.yaml` y `up -d
 --force-recreate web-leads` (el nginx no lo necesita; solo se recomienda dejarlo
 cerrado por seguridad).
 
+## n8n INTEGRAIA20 (SPEC 76)
+
+Copia paralela de los 7 workflows del bot, adaptada a Odoo 20, en el **n8n ya
+desplegado** (contenedor `n8n-container`), dentro de la carpeta **INTEGRAIA20**
+(subcarpetas `chatwoot`/`ycloud`) del proyecto Personal — sin tocar la carpeta
+`INTEGRAIA` (19) ni su tráfico.
+
+- Fuente versionada: `n8n_json/` (`build_integraia20.py` genera las copias desde
+  el `n8n_json` del 19 + `chatwoot/` y `ycloud/` ya adaptados).
+- Adaptaciones: base `lead20.integraia.lat`, header `x-chatbot-token` en **todos**
+  los nodos HTTP a Odoo, webhooks `chatwoot-integraia-20`/`ycloud-20`, carrito
+  degradado a `procesar_paso`, ids deterministas (idempotente, no colisiona con 19).
+- Los workflows se importan **inactivos**: el corte de tráfico real (activar los
+  webhooks `-20` y reapuntar Chatwoot/ycloud) es un paso manual posterior.
+
+Desplegar / re-desplegar (idempotente):
+
+```bash
+bash 8_import_n8n_integraia20.sh
+```
+
+- Credencial `postgres-lead20` → `dbodoo20` (n8n se conecta a `odoo_network_20`);
+  el RAG-20 escribe `public.n8n_vectors`/`public.ingested_files` en `dbodoo20`.
+- Token: Odoo 20 usa el mismo `CHATBOT_API_TOKEN` que n8n (Ajustes →
+  `ai_chatbot_1_portal.api_token`); si se cambia por SQL, reiniciar el web
+  (la caché `ormcache` de `ir_config_parameter` no se invalida sola).
+- Requisito en el compose del 19 (`docker-compose.n8n.yml`): el servicio `n8n`
+  declara la red `odoo_network_20` (ya aplicado) para alcanzar `dbodoo20`.
+
 ## Notas
 
 - `odoo.conf` lleva `without_demo = True` (opción booleana desde 19.0); el
