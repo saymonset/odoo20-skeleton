@@ -1,0 +1,2831 @@
+{
+  "name": "ycloud_create_lead_0_con_menu_whatsapp_20",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "let original = $json; // SPEC 49: la respuesta Odoo trae session/account\nconst texto = $json.texto_para_usuario || $json.text || '';\nconst botones = Array.isArray($json.botones) ? $json.botones.filter(Boolean).slice(0, 3) : [];\nconst to = original.phone_number_formatted || original.user_number || original.phone_number\n  || original.session_id || $json.session_id;\nconst from = original.account_id || $json.account_id;\n// SPEC 40: la lista de categorias (buscador) tiene prioridad sobre los\n// botones — un mensaje interactivo solo admite un tipo de accion.\nconst listaCat = $json.lista_categorias;\nconst secciones = listaCat && Array.isArray(listaCat.sections) ? listaCat.sections : [];\nlet whatsappPayload = null;\nif (secciones.length && to && from) {\n  whatsappPayload = {\n    from: from,\n    to: to,\n    type: 'interactive',\n    interactive: {\n      type: 'list',\n      body: { text: texto },\n      action: { button: listaCat.button || 'Ver categorias', sections: secciones }\n    }\n  };\n} else if (botones.length && to) {\n  whatsappPayload = {\n    from: from,\n    to: to,\n    type: \"interactive\",\n    interactive: {\n      type: \"button\",\n      body: { text: texto },\n      action: { buttons: botones.map(b => ({ type: \"reply\", reply: { id: b, title: b } })) }\n    }\n  };\n}\nconst salida = [{ json: {\n  ...original,\n  ...$json,\n  output: texto,\n  text: texto,\n  content: texto,\n  modo: $json.modo || original.modo,\n  finalizado: $json.finalizado || false,\n  imagenes: $json.imagenes || [],\n  botones,\n  whatsappPayload\n} }];\n\n// SPEC 39: un media-message por producto con imagen (catálogo/búsqueda).\n// El nodo de envío ya prefiere whatsappPayload: cada item extra envía su\n// imagen con caption, después del texto (índice + botones).\nconst imagenes = Array.isArray($json.imagenes) ? $json.imagenes : [];\nif (to && from) {\n  for (const img of imagenes) {\n    // typeof: un string (codigo viejo de Odoo) expone el metodo legacy\n    // String.prototype.link (truthy) y no debe pasar como imagen.\n    if (!img || typeof img.link !== 'string' || !img.link) continue;\n    salida.push({ json: {\n      ...original,\n      ...$json,\n      whatsappPayload: {\n        from: from,\n        to: to,\n        type: 'image',\n        image: { link: img.link, caption: img.caption || '' }\n      }\n    } });\n  }\n}\nreturn salida;"
+      },
+      "id": "spec49-preparar-salida-carrito",
+      "name": "Preparar_salida_carrito",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        53920,
+        15296
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.whatsappPayload ? JSON.stringify($json.whatsappPayload) : JSON.stringify({ from: $json.account_id, to: $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id, type: 'text', text: { body: $json.texto_para_usuario || $json.text || $json.content } }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "spec49-enviar-salida-carrito",
+      "name": "Enviar_salida_carrito",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        54128,
+        15296
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cD4Us3WKlSTj5nq5",
+          "name": "YCloud API (SPEC48)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let original = $json; // SPEC 49: la respuesta Odoo trae session/account\nconst texto = $json.texto_para_usuario || $json.text || '';\nconst botones = Array.isArray($json.botones) ? $json.botones.filter(Boolean).slice(0, 3) : [];\nconst to = original.phone_number_formatted || original.user_number || original.phone_number\n  || original.session_id || $json.session_id;\nconst from = original.account_id || $json.account_id;\n// SPEC 40: la lista de categorias (buscador) tiene prioridad sobre los\n// botones — un mensaje interactivo solo admite un tipo de accion.\nconst listaCat = $json.lista_categorias;\nconst secciones = listaCat && Array.isArray(listaCat.sections) ? listaCat.sections : [];\nlet whatsappPayload = null;\nif (secciones.length && to && from) {\n  whatsappPayload = {\n    from: from,\n    to: to,\n    type: 'interactive',\n    interactive: {\n      type: 'list',\n      body: { text: texto },\n      action: { button: listaCat.button || 'Ver categorias', sections: secciones }\n    }\n  };\n} else if (botones.length && to) {\n  whatsappPayload = {\n    from: from,\n    to: to,\n    type: \"interactive\",\n    interactive: {\n      type: \"button\",\n      body: { text: texto },\n      action: { buttons: botones.map(b => ({ type: \"reply\", reply: { id: b, title: b } })) }\n    }\n  };\n}\nconst salida = [{ json: {\n  ...original,\n  ...$json,\n  output: texto,\n  text: texto,\n  content: texto,\n  modo: $json.modo || original.modo,\n  finalizado: $json.finalizado || false,\n  imagenes: $json.imagenes || [],\n  botones,\n  whatsappPayload\n} }];\n\n// SPEC 39: un media-message por producto con imagen (catálogo/búsqueda).\n// El nodo de envío ya prefiere whatsappPayload: cada item extra envía su\n// imagen con caption, después del texto (índice + botones).\nconst imagenes = Array.isArray($json.imagenes) ? $json.imagenes : [];\nif (to && from) {\n  for (const img of imagenes) {\n    // typeof: un string (codigo viejo de Odoo) expone el metodo legacy\n    // String.prototype.link (truthy) y no debe pasar como imagen.\n    if (!img || typeof img.link !== 'string' || !img.link) continue;\n    salida.push({ json: {\n      ...original,\n      ...$json,\n      whatsappPayload: {\n        from: from,\n        to: to,\n        type: 'image',\n        image: { link: img.link, caption: img.caption || '' }\n      }\n    } });\n  }\n}\nreturn salida;"
+      },
+      "id": "ad5666cf-51d1-4dae-99bc-53961f1724c4",
+      "name": "Preparar_salida_carrito1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        71856,
+        4368
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.whatsappPayload ? JSON.stringify($json.whatsappPayload) : JSON.stringify({ from: $json.account_id, to: $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id, type: 'text', text: { body: $json.texto_para_usuario || $json.text || $json.content } }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "1c99a30c-87b2-4f30-a5db-1598e98ed4e2",
+      "name": "Enviar_salida_carrito1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        72064,
+        4368
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cD4Us3WKlSTj5nq5",
+          "name": "YCloud API (SPEC48)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let original = $json; // SPEC 49: la respuesta Odoo trae session/account\nconst texto = $json.texto_para_usuario || $json.text || '';\nconst botones = Array.isArray($json.botones) ? $json.botones.filter(Boolean).slice(0, 3) : [];\nconst to = original.phone_number_formatted || original.user_number || original.phone_number\n  || original.session_id || $json.session_id;\nconst from = original.account_id || $json.account_id;\n// SPEC 40: la lista de categorias (buscador) tiene prioridad sobre los\n// botones — un mensaje interactivo solo admite un tipo de accion.\nconst listaCat = $json.lista_categorias;\nconst secciones = listaCat && Array.isArray(listaCat.sections) ? listaCat.sections : [];\nlet whatsappPayload = null;\nif (secciones.length && to && from) {\n  whatsappPayload = {\n    from: from,\n    to: to,\n    type: 'interactive',\n    interactive: {\n      type: 'list',\n      body: { text: texto },\n      action: { button: listaCat.button || 'Ver categorias', sections: secciones }\n    }\n  };\n} else if (botones.length && to) {\n  whatsappPayload = {\n    from: from,\n    to: to,\n    type: \"interactive\",\n    interactive: {\n      type: \"button\",\n      body: { text: texto },\n      action: { buttons: botones.map(b => ({ type: \"reply\", reply: { id: b, title: b } })) }\n    }\n  };\n}\nconst salida = [{ json: {\n  ...original,\n  ...$json,\n  output: texto,\n  text: texto,\n  content: texto,\n  modo: $json.modo || original.modo,\n  finalizado: $json.finalizado || false,\n  imagenes: $json.imagenes || [],\n  botones,\n  whatsappPayload\n} }];\n\n// SPEC 39: un media-message por producto con imagen (catálogo/búsqueda).\n// El nodo de envío ya prefiere whatsappPayload: cada item extra envía su\n// imagen con caption, después del texto (índice + botones).\nconst imagenes = Array.isArray($json.imagenes) ? $json.imagenes : [];\nif (to && from) {\n  for (const img of imagenes) {\n    // typeof: un string (codigo viejo de Odoo) expone el metodo legacy\n    // String.prototype.link (truthy) y no debe pasar como imagen.\n    if (!img || typeof img.link !== 'string' || !img.link) continue;\n    salida.push({ json: {\n      ...original,\n      ...$json,\n      whatsappPayload: {\n        from: from,\n        to: to,\n        type: 'image',\n        image: { link: img.link, caption: img.caption || '' }\n      }\n    } });\n  }\n}\nreturn salida;"
+      },
+      "id": "66edd08b-490c-492a-9814-ef9e525e6b2f",
+      "name": "Preparar_salida_carrito2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16576,
+        -368
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.whatsappPayload ? JSON.stringify($json.whatsappPayload) : JSON.stringify({ from: $json.account_id, to: $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id, type: 'text', text: { body: $json.texto_para_usuario || $json.text || $json.content } }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "9dff51fe-e9d7-49ef-930e-025cb7d009d6",
+      "name": "Enviar_salida_carrito2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16784,
+        -368
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cD4Us3WKlSTj5nq5",
+          "name": "YCloud API (SPEC48)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Procesa la data de entrada, y si es agendar cita  con el primer paso chequea el telefono para buscar  ya variables en bd y el suuario tipee menos",
+        "height": 480,
+        "width": 560
+      },
+      "id": "1dea425a-604d-40d4-a9db-1262a547e254",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        46160,
+        17728
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "842e79f9-d761-42fb-a00c-e38332e45664",
+      "name": "When clicking ‘Execute workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        46016,
+        18912
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "id": "3ab8bb29-ca8c-43ff-8d8a-5cabb6fc83fc",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        44256,
+        19232
+      ],
+      "webhookId": "a24efc8d-00a6-4acd-9c87-2b4c8a8fedd5",
+      "typeVersion": 1.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "96996d45-ddf6-4f34-850c-6135282de201",
+              "name": "text",
+              "type": "string",
+              "value": "={{ $json.chatInput }}"
+            },
+            {
+              "id": "886653c3-a819-4881-a860-62b44509d731",
+              "name": "session_id",
+              "type": "string",
+              "value": "={{ $json.sessionId }}"
+            },
+            {
+              "id": "ee045dc3-b0e6-4366-b179-2bb78781425b",
+              "name": "account_id",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "4d37a5ee-0b5e-40e0-a5ca-4dc372f0a1e6",
+              "name": "conversation_id",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "3eb0a246-8cb9-477b-a0df-460f3c6b3b8a",
+              "name": "message_type",
+              "type": "string",
+              "value": "incoming"
+            },
+            {
+              "id": "af85fc32-b8b9-43a3-a666-403ad84a8e5f",
+              "name": "user_name",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "49e39027-d5f1-4abb-9e53-22545e9b39c5",
+              "name": "user_number",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "d215ec30-76a4-4011-a990-a484c225565b",
+              "name": "platform",
+              "type": "string",
+              "value": "Channel::Whatsapp"
+            },
+            {
+              "id": "fbce67e5-7649-4e4f-86da-7022b5a7a047",
+              "name": "channel",
+              "type": "string",
+              "value": "Channel::Whatsapp"
+            },
+            {
+              "id": "cffc4318-41d4-470e-9204-0487f399268d",
+              "name": "content",
+              "type": "string",
+              "value": "={{ $json.chatInput }}"
+            },
+            {
+              "id": "80e133a1-a3f2-456a-b8b9-c777b7febaf9",
+              "name": "file_type",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "d62b3d9d-284f-4bdf-a2c3-b97776ba817d",
+              "name": "phone_number",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "f5e36c51-bfc3-47c2-98c4-309b259890f5",
+              "name": "user_message",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "32c13a58-cbaf-45d2-ae7d-faa18aa1f017",
+              "name": "image_url",
+              "type": "string",
+              "value": ""
+            },
+            {
+              "id": "d2dcdf4c-9ebb-4ac9-8183-fab3bafbce84",
+              "name": "agente_desactivado",
+              "type": "string",
+              "value": "on"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "29dd6222-7b98-41f3-8663-6bb62e163ee3",
+      "name": "Seteamos_variables",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        44656,
+        19168
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "4313ad77-8015-436a-a40d-3ef7cab78263",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "Channel::Whatsapp"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Whatsapp"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "37f80664-6420-4c2b-b965-b65ec4656310",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "Channel::Instagram"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Instagram"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "cd226af3-e973-4fa2-adee-7b4988db3d90",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "Channel::facebook"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "facebook"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "6bb7392d-9fa9-4da8-86ee-94ec3e7385e1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "Channel::FacebookPage"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "facebook"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "c6773713-6da3-44c1-8df0-e8957d72913e",
+                    "operator": {
+                      "type": "number",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "leftValue": {},
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "error_no_existe_channel"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "71180d02-285a-4f1f-bcd6-394159da46cd",
+      "name": "Indentifica_canal",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        45584,
+        19152
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {},
+      "id": "483bef91-173a-4af2-86bf-2c832b7b5198",
+      "name": "Dueno_o_Bot_responde",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        44912,
+        19520
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "3c30564f-7df5-4564-b859-e13889009357",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.agente_desactivado }}",
+                    "rightValue": "off"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "respuesta_humana"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "1239d7b6-e41f-4d3b-a7b7-c6d691a43e69",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.agente_desactivado }}",
+                    "rightValue": "on"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Respuesta IA"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2613645b-b81e-4e32-8576-6f74cc975447",
+      "name": "Configurar_IA_Responda?",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        45200,
+        19168
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "3c30564f-7df5-4564-b859-e13889009357",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "incoming"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "incoming"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "8b266895-9c0c-4a53-804d-2213bca3a1a0",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "outgoing"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "outcoming"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ffeb21c3-0ee1-4be4-882f-a021241d91fb",
+      "name": "Pregunta_el_Cliente?",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        44960,
+        19184
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {},
+      "id": "33ff344e-d1c8-4763-9506-29b38cbafeb3",
+      "name": "End1",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        45632,
+        18944
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.session_id }}",
+        "contextWindowLength": 10
+      },
+      "id": "07a73786-09b6-48ed-a500-aa2f00809410",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [
+        48016,
+        18720
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ycloud-20",
+        "options": {}
+      },
+      "id": "02d1448d-0095-4e61-ab68-e92453d893f6",
+      "name": "Entrar_ChattWoot",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        43792,
+        18352
+      ],
+      "webhookId": "2ed3208c-f997-4199-9baf-291afd8df2a2",
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b9b41b4-ef98-4699-80eb-24e70dbee117",
+              "name": "=text",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.interactive?.button_reply?.title || $json.body.whatsappInboundMessage?.interactive?.button_reply?.id || $json.body.whatsappInboundMessage?.interactive?.list_reply?.title || $json.body.whatsappInboundMessage?.interactive?.list_reply?.id || $json.body.whatsappInboundMessage?.image?.caption || $json.body.whatsappInboundMessage?.video?.caption || $json.body.whatsappInboundMessage?.document?.caption || $json.body.whatsappInboundMessage?.text?.body || '' }}"
+            },
+            {
+              "id": "0f98afd1-e2e6-4c4d-9e9f-6e38c87694c6",
+              "name": "session_id",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.from || '' }}"
+            },
+            {
+              "id": "9cbd2d29-4e32-46fd-bbea-88317ec7681d",
+              "name": "account_id",
+              "type": "string",
+              "value": "={{ ($json.body.whatsappInboundMessage?.to || '').replace(/[\\s}]+/g, '') }}"
+            },
+            {
+              "id": "9052a8a2-5a39-4b6f-a44f-728e2e7c2c41",
+              "name": "message_type",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage ? 'incoming' : 'outgoing' }}"
+            },
+            {
+              "id": "c76e6bbf-22cf-4dd8-ae67-49c5801c5be1",
+              "name": "user_name",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.customerProfile?.name || '' }}"
+            },
+            {
+              "id": "b16fbd53-b6a3-4e0b-ac12-01912379a2fc",
+              "name": "user_number",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.from || '' }}"
+            },
+            {
+              "id": "327aa426-279e-4d47-b4a9-2910e9b62282",
+              "name": "platform",
+              "type": "string",
+              "value": "whatsapp"
+            },
+            {
+              "id": "f921da3f-2311-4646-a2c9-152401811c3f",
+              "name": "message_type",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage ? 'incoming' : 'outgoing' }}"
+            },
+            {
+              "id": "12bb3da8-0d23-45ec-8ed8-a962d512d0fb",
+              "name": "channel",
+              "type": "string",
+              "value": "Channel::Whatsapp"
+            },
+            {
+              "id": "e70d5c0a-a243-4625-af3e-c40ca295cdef",
+              "name": "content",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.interactive?.button_reply?.title || $json.body.whatsappInboundMessage?.interactive?.button_reply?.id || $json.body.whatsappInboundMessage?.interactive?.list_reply?.title || $json.body.whatsappInboundMessage?.interactive?.list_reply?.id || $json.body.whatsappInboundMessage?.image?.caption || $json.body.whatsappInboundMessage?.video?.caption || $json.body.whatsappInboundMessage?.document?.caption || $json.body.whatsappInboundMessage?.text?.body || '' }}"
+            },
+            {
+              "id": "8a12bb4d-d77a-466b-ac20-851d770c34c0",
+              "name": "file_type",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.type || '' }}"
+            },
+            {
+              "id": "664d94bf-9a93-472e-8d11-887f1f82af70",
+              "name": "phone_number",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.from || '' }}"
+            },
+            {
+              "id": "31829d53-6dc4-4a0a-829f-6a203803d8ee",
+              "name": "user_name",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.customerProfile?.name || '' }}"
+            },
+            {
+              "id": "1ca7bf91-1d72-4995-a578-12c0aa68da8e",
+              "name": "image_url",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.image?.link || $json.body.whatsappInboundMessage?.video?.link || $json.body.whatsappInboundMessage?.document?.link || $json.body.whatsappInboundMessage?.audio?.link || '' }}"
+            },
+            {
+              "id": "eb85d8b8-a454-4bfd-9751-05a2314beee3",
+              "name": "conversation_id",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.from || '' }}"
+            },
+            {
+              "id": "b281f49c-6d19-4f52-b659-65602793afcc",
+              "name": "bot_number",
+              "type": "string",
+              "value": "={{ $json.body.whatsappInboundMessage?.to || '' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4767a3e5-d1dc-466f-b0a7-dd35ff4e9207",
+      "name": "Obtener_Info_basica",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        44320,
+        18560
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "url": "=https://api.ycloud.com/v2/contact/contacts?filter.phoneNumber={{ encodeURIComponent($json.user_number) }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "93327d22f6546624889c7b967a1e4e95"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "43b688f9-4daa-4bcd-b77c-8120f33bea16",
+      "name": "Obtener_Contacto_YCloud",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        44656,
+        18704
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "jsCode": "const contacto = $json.items?.[0];\nconst activado = contacto?.tags?.includes('agente_desactivado') ? 'off' : 'on';\nreturn [{ json: { ...$('Obtener_Info_basica').item.json, agente_desactivado: activado } }];"
+      },
+      "id": "f16d0413-c3d8-4a98-b67f-5334d95bd4a9",
+      "name": "Ajustar_agente_desactivado",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        44608,
+        18992
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "loose"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "spec49-carrito-mode",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.modo }}",
+                    "rightValue": "CARRITO"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "CARRITO"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "or",
+                "conditions": [
+                  {
+                    "id": "13990ce7-e3b4-4056-9e7d-4eee97e1f577",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.modo }}",
+                    "rightValue": "MENU_PRINCIPAL"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "MENU_PRINCIPAL"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "acc9bba6-bb76-43a8-8145-33b4a28ccfb7",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.modo }}",
+                    "rightValue": "FLUJO"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "FLUJO"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "e4b89e53-5df8-4322-8bc7-9dacf87edc1e",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.modo }}",
+                    "rightValue": "COMPLETADO"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "COMPLETADO"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "23d205ee-7682-4a66-a382-e0c8e5687db4",
+      "name": "Consulta_o_agendar_cita",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        46928,
+        19424
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {
+          "maxTokens": 3000
+        }
+      },
+      "id": "2fb2c73c-ecbc-4de6-809a-fb83cddbc0b0",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        47904,
+        18720
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "SynY9HmZH2SsZkWD",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Mensaje del usuario: {{ $json.text }}\nURL de imagen: {{ $json.image_url }}\nSession ID: {{ $json.session_id }}\nConversation ID: {{ $json.conversation_id }}\nAccount ID: {{ $json.account_id }}\nPlatform: {{ $json.platform }}\nFecha/hora actual (debes usarla en timestamp_actividad): {{ $now }}\n\n---\n\nPASOS DE EJECUCIÓN:\n1. Si el usuario hace preguntas sobre el negocio (precios, planes, servicios, requisitos, horarios, políticas), DEBES consultar PRIMERO la herramienta Base_Conocimiento_RAG.\n2. Una vez obtenida la información de la herramienta (o tras evaluar la imagen/situación), genera tu RESPUESTA FINAL.\n\nFORMATO DE SALIDA (Aplica solo a la respuesta final):\n- Tu respuesta final debe ser ÚNICAMENTE un objeto JSON válido, sin texto adicional, sin markdown (```json), sin comillas escapadas.\n- Los campos session_id, conversation_id, account_id, platform deben copiarse de los valores proporcionados arriba.\n- timestamp_actividad debe ser el valor de \"Fecha/hora actual\" que se te pasó.\n- Si no encuentras información en la herramienta, NO la inventes: responde en el campo JSON correspondiente ofreciendo agendar asesoría/demo o conectar con el dueño.\n- {{ $('Obtener_configuracion_agente').item.json.menu_enabled === true\n  ? 'Si la intención es MENU (el usuario escribió \"menu\", \"menú\", \"hola\", \"inicio\" o pidió las opciones), devuelve EXACTAMENTE el texto de la sección \"=== MENÚ DE OPCIONES ===\" del system prompt en \"output\", con \"isMenu\": true y \"tipoPregunta\": \"MENU\". No reformatees, no resumas ni agregues texto propio: usa el menú tal cual.'\n  : 'MODO CONVERSACIONAL (sin menú): NUNCA presentes listas numeradas de opciones ni menciones un menú. Ante un saludo, preséntate brevemente con la marca de la empresa y una introducción humana de lo que ofrece el negocio (apóyate en Base_Conocimiento_RAG), invitando a preguntar con sus propias palabras. Ante cualquier pregunta, responde PRIMERO con la información disponible del RAG y solo al final sugiere de forma discreta el siguiente paso; dispara un flujo SOLO cuando el usuario acepte esa sugerencia o pida la acción explícitamente.' }}\n",
+        "options": {
+          "systemMessage": "={{ $json.system_prompt || \"Eres un asistente virtual. Responde unicamente con un objeto JSON valido con las claves output, tipoPregunta, isMenu, equipo_asignado, flow_name, session_id, conversation_id, account_id, platform y timestamp_actividad.\" }}"
+        }
+      },
+      "id": "3acab389-07cf-4c12-9f89-d85411d0d54c",
+      "name": "Agente_Informacion_basica",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        47936,
+        18432
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "id": "8a95e304-7aa9-4834-a386-683783ec347d",
+      "name": "Embeddings Base Conocimiento",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        48208,
+        19088
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "SynY9HmZH2SsZkWD",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst nuevosItems = [];\n\n// SPEC 32 + SPEC 58: anuncio determinista de compra (independiente del LLM).\n// El anuncio es el enlace a la tienda online (SPEC 46/58), extraído del\n// system_prompt. Se anexa cuando el negocio tiene el carrito activo, la\n// salida no lo incluye y no hay activación de flujo ni menú. Sin enlace de\n// tienda en el prompt → no se anexa nada.\nconst systemPrompt = (() => {\n  try {\n    return $('Obtener_configuracion_agente').item.json.system_prompt || '';\n  } catch (e) {\n    return '';\n  }\n})();\nconst carritoActivo = systemPrompt.indexOf('=== CARRITO DE COMPRA ===') !== -1;\nconst match = systemPrompt.match(/❗ Visita nuestra tienda online: \\S+/);\nconst anuncioLinea = match ? match[0] : '';\nconst ANUNCIO = anuncioLinea ? '\\n' + anuncioLinea : '';\n\nfor (const item of items) {\n  const output = item.json.output || '';\n  const esActivacionFlujo = !!(item.json.flow_name || item.json.equipo_asignado);\n  const esMenu = item.json.isMenu === true || item.json.tipoPregunta === 'MENU';\n  const anunciar = carritoActivo && ANUNCIO && output\n    && output.indexOf(anuncioLinea) === -1\n    && !esActivacionFlujo && !esMenu;\n\n  const text = anunciar ? output + ANUNCIO : output;\n  const nuevoItem = {\n    json: {\n      ...item.json,\n      output: text,\n      text: text,\n      content: text\n    }\n  };\n  nuevosItems.push(nuevoItem);\n}\n\nreturn nuevosItems;"
+      },
+      "id": "be7087be-d508-4ac1-93e6-2fc3bb81f9e0",
+      "name": "Unificar_salida",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        50368,
+        19600
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 3,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "3a4922be-cbaa-4bb1-8614-6d8b82e4f404",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.equipo_asignado }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6437f289-5556-4e3a-a299-b947dfd38e6c",
+      "name": "Cita_con_Equipo_asignado",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        48688,
+        18304
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "content": "## Solo responde la parte estatica de preguntas",
+        "height": 528,
+        "width": 1168
+      },
+      "id": "401ba363-1ed5-4b92-a68b-1b666092ad56",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        47744,
+        18320
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## I'Se canaliza Instagram, faceboook, whatsapp etc"
+      },
+      "id": "b4d9c86d-62dd-4fdd-b6b7-6322772dee97",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        46880,
+        19296
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.ODOO_APP_URL_20 || 'https://lead20.integraia.lat' }}/ai_chatbot_1_portal/inicioagendar",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"session_id\": \"{{ $json.session_id }}\",\n  \"conversation_id\":\"{{ $json.conversation_id }}\",\n  \"account_id\":\"{{ $json.account_id }}\",\n   \"name_flow\": \"{{$json.flow_name || 'flujo_agendamiento_default'}}\",\n   \"equipo_asignado\": \"{{$json.equipo_asignado|| \"\"}}\"\n}\n",
+        "options": {
+          "timeout": 30000
+        },
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-chatbot-token",
+              "value": "={{ $env.CHATBOT_API_TOKEN || '' }}"
+            }
+          ]
+        },
+        "sendHeaders": true
+      },
+      "id": "82aedb17-78d5-4c64-929d-65420a56df55",
+      "name": "paso_0_inicio_agendar",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        49984,
+        18592
+      ],
+      "typeVersion": 4.3,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Separar_variables_en_json - versión con recuperación extra para strings como: {}, \"equipo_asignado\":...\nconst items = $input.all();\nconst nuevosItems = [];\n\nfunction detectarSiNo(texto) {\n  if (!texto || typeof texto !== 'string') return false;\n  const patrones = [\n    /\\b(sí|si)\\s*\\/\\s*no\\b/i,\n    /\\b(aceptas|confirmas|estás de acuerdo|quieres|deseas|te gustaría)\\b.*\\?/i,\n    /^.*\\?.*(sí|si).*(no).*$/i,\n    /¿(deseas|quieres|te gustaría|estás seguro|aceptas)/i,\n    /\\b(yes|no)\\b/i,\n    /\\b(responder (sí|si|no))\\\\b/i\n  ];\n  return patrones.some(p => p.test(texto));\n}\n\nconst mapeoFlowBase = {\n  'Agendamiento_Directo': 'flujo_agendamiento_directo',\n  'Agendamiento_Precios': 'flujo_agendamiento_precios',\n  'Agendamiento_Servicios': 'flujo_agendamiento_servicios',\n  'Agendamiento_Otra_Consulta': 'flujo_agendamiento_otra_consulta',\n  'Ventas': 'flujo_ventas',\n  'CITAS_MP': 'flujo_citas_medios_propios',\n  'CITAS_SEGUROS': 'flujo_citas_seguro',\n  'RESULTADOS_LAB': 'flujo_resultados_laboratorio',\n  'RESULTADOS_IMAGENES': 'flujo_resultados_imagenes'\n};\n\n// Merge dinámico: Odoo amplía el mapeo base con flow_map (defaults preservados).\nlet flowMapOdoo = {};\ntry {\n  flowMapOdoo = $('Obtener_configuracion_agente').item.json.flow_map || {};\n} catch (e) {\n  flowMapOdoo = {};\n}\nconst mapeoFlow = Object.assign({}, mapeoFlowBase, flowMapOdoo);\nconst flowPorDefecto = 'flujo_agendamiento_default';\n\n// Red de seguridad: texto a usar cuando el agente no produjo output (p. ej.\n// intención FALLBACK sin respuesta). Prioriza el fallback_message de Odoo.\n// SPEC 18: menu_enabled (Odoo) decide modo menú (SPEC 13/17) vs conversacional.\nlet menuEnabled = false;\ntry {\n  menuEnabled = $('Obtener_configuracion_agente').item.json.menu_enabled === true;\n} catch (e) {\n  menuEnabled = false;\n}\nlet fallbackTexto = menuEnabled\n  ? 'Disculpa, no entendí 🤔 ¿Puedes reformularlo? Escribe *menu* para ver las opciones.'\n  : 'Disculpa, no entendí 🤔 ¿Me lo cuentas con otras palabras? Con gusto te respondo con la información del negocio.';\ntry {\n  const fb = $('Obtener_configuracion_agente').item.json.fallback_message;\n  if (fb && typeof fb === 'string' && fb.trim()) fallbackTexto = fb.trim();\n} catch (e) {\n  // sin Obtener_configuracion_agente se usa el texto por defecto\n}\n// --- Recuperación del texto plano (SPEC 36) ---\n// El ruteo (session_id, conversation_id, account_id, platform) viaja dentro del\n// eco JSON de la IA. Si el parseo falla, se reinyecta desde la config para que\n// los nodos de envío nunca pierdan `from`/`to` (YCloud 400 PARAM_MISSING).\nfunction routingFields() {\n  try {\n    const cfg = $('Obtener_configuracion_agente').item.json || {};\n    const out = {};\n    for (const k of ['session_id', 'conversation_id', 'account_id', 'platform']) {\n      if (cfg[k]) out[k] = cfg[k];\n    }\n    return out;\n  } catch (e) {\n    return {};\n  }\n}\n\nfunction mergeRouting(itemJson) {\n  const ruteo = routingFields();\n  const out = {};\n  for (const k in ruteo) {\n    if (!itemJson || !itemJson[k]) out[k] = ruteo[k];\n  }\n  return out;\n}\n\nfunction pareceFragmentoJson(texto) {\n  return /^\\s*[\\[{]/.test(texto) || /\"[^\"]*\"\\s*:/.test(texto);\n}\n\nfunction textoRecuperacion(raw) {\n  if (typeof raw === 'string' && raw.trim() && !pareceFragmentoJson(raw.trim())) {\n    return raw.trim();\n  }\n  return fallbackTexto;\n}\n\n\n// --- Sistema del menú determinista (SPEC 13) ---\n// El menú se sirve desde el system_prompt (única fuente, SPEC 03), sin IA ni RAG.\nconst systemPrompt = (() => {\n  try {\n    return $('Obtener_configuracion_agente').item.json.system_prompt || '';\n  } catch (e) {\n    return '';\n  }\n})();\n\nconst MENU_MARKER = '=== MENÚ DE OPCIONES ===';\nconst menuTexto = (() => {\n  const idx = systemPrompt.indexOf(MENU_MARKER);\n  if (idx === -1) return null;\n  const resto = systemPrompt.slice(idx + MENU_MARKER.length);\n  const fin = resto.search(/\\n=== /);\n  const seccion = (fin === -1 ? resto : resto.slice(0, fin)).trim();\n  return seccion || null;\n})();\n\nconst keywordsMenu = (() => {\n  for (const linea of systemPrompt.split('\\n')) {\n    if (linea.includes('(muestra el menú)')) {\n      const m = linea.match(/palabras clave:\\s*([^\\n→]+)/);\n      if (m) {\n        return m[1].split(',').map(k => k.trim().toLowerCase()).filter(Boolean);\n      }\n    }\n  }\n  return [];\n})();\n\nfunction tryParseJSON(rawStr) {\n  // Limpiar delimitadores markdown ```json ... ``` o ``` ... ```\n  let cleaned = rawStr.trim();\n  cleaned = cleaned.replace(/^```(?:json)?\\s*/i, '').replace(/\\s*```\\s*$/i, '').trim();\n\n  // Intento directo con string limpio\n  try {\n    return JSON.parse(cleaned);\n  } catch (e) {\n    // preparación secundaria: limpieza\n    let attempt = cleaned;\n    // eliminar prefijo \"{},\" si existe\n    attempt = attempt.replace(/^\\s*\\{\\}\\s*,\\s*/, '');\n    // eliminar comas solitarias al inicio\n    attempt = attempt.replace(/^\\s*,\\s*/, '');\n    // eliminar comas antes de cierre de objeto o array\n    attempt = attempt.replace(/,\\s*}/g, '}').replace(/,\\s*]/g, ']');\n    // si no empieza con { pero hay un } al final, añadimos '{' delante\n    if (!attempt.startsWith('{') && attempt.indexOf('}') !== -1) {\n      attempt = '{' + attempt;\n    }\n    // si no termina con } y hay una { en el string, cerramos con }\n    if (!attempt.endsWith('}') && attempt.indexOf('{') !== -1) {\n      attempt = attempt + '}';\n    }\n    // último intento de parse\n    try {\n      return JSON.parse(attempt);\n    } catch (e2) {\n      // si sigue fallando devolvemos null para indicar que no se pudo parsear\n      return null;\n    }\n  }\n}\n\nfor (const item of items) {\n  try {\n    let str = item.json.output;\n    let datosParseados = null;\n\n    // Si ya es objeto, usarlo\n    if (typeof str !== 'string' && typeof str === 'object' && str !== null) {\n      datosParseados = str;\n    } else if (typeof str === 'string') {\n      // 0) Limpiar delimitadores markdown ```json ... ``` o ``` ... ```\n      str = str.replace(/^```(?:json)?\\s*/i, '').replace(/\\s*```\\s*$/i, '').trim();\n\n      // 1) intento de parse robusto usando helper\n      // primero normalizamos backslash-u{...} como antes\n      let normalized = str.replace(/\\\\u\\{([^}]+)\\}/g, (match, inner) => {\n        const parts = inner.split(/\\\\u/);\n        let result = '';\n        for (let part of parts) {\n          if (part === '') continue;\n          result += String.fromCodePoint(parseInt(part, 16));\n        }\n        return result;\n      });\n\n      // Intento parse directo y fallback con tryParseJSON\n      datosParseados = tryParseJSON(normalized);\n\n      if (!datosParseados) {\n        // no se pudo parsear ni en el intento secundario: item de recuperación.\n        // SPEC 36: si la IA respondió prosa válida (no fragmento JSON), enviarla\n        // al usuario en lugar del fallback genérico; se reinyecta el ruteo para\n        // que el envío por YCloud tenga `from`/`to` (evita 400 PARAM_MISSING).\n        const recuperacion = textoRecuperacion(item.json.output);\n        const errorItem = {\n          json: {\n            error: 'JSON_PARSE_ERROR',\n            message: 'No se pudo extraer objeto JSON válido',\n            original: item.json.output,\n            _raw_extracted: normalized,\n            ...item.json,\n            ...mergeRouting(item.json),\n            flow_name: flowPorDefecto,\n            output: recuperacion,\n            text: recuperacion,\n            content: recuperacion,\n            tipoPregunta: 'FALLBACK'\n          }\n        };\n        nuevosItems.push(errorItem);\n        continue; // pasar al siguiente item\n      }\n    } else {\n      // tipo inválido: siempre fallback genérico (no hay texto de la IA que enviar).\n      // SPEC 36: se reinyecta el ruteo igual que en JSON_PARSE_ERROR.\n      const errorItem = {\n        json: {\n          error: 'INVALID_OUTPUT_TYPE',\n          original: item.json.output,\n          ...item.json,\n          ...mergeRouting(item.json),\n          flow_name: flowPorDefecto,\n          output: fallbackTexto,\n          text: fallbackTexto,\n          content: fallbackTexto,\n          tipoPregunta: 'FALLBACK'\n        }\n      };\n      nuevosItems.push(errorItem);\n      continue;\n    }\n\n    // Des-nidificación defensiva: si 'output' es un string JSON con clave\n    // 'output', extraer el objeto interno y hacer merge de sus campos.\n    // Cubre desobediencia de formato de la IA (JSON anidado dentro de output).\n    if (typeof datosParseados.output === 'string' &&\n        datosParseados.output.trim().startsWith('{')) {\n      const interno = tryParseJSON(datosParseados.output);\n      if (interno && typeof interno === 'object' && interno !== null &&\n          interno.output !== undefined) {\n        datosParseados = Object.assign({}, datosParseados, interno);\n      }\n    }\n\n    // --- lógica original conservada ---\n    if (!datosParseados.tipoPregunta && datosParseados.output && typeof datosParseados.output === 'string') {\n      if (datosParseados.output.includes('Vamos a agendar tu cita') || \n          datosParseados.output.includes('Indíqueme si la atención será por medios propios')) {\n        datosParseados.tipoPregunta = 'CITA_DIRECTA';\n      }\n    }\n\n    if (datosParseados.output && typeof datosParseados.output === 'string') {\n      if (datosParseados.output.includes('Para enviarte tus resultados') || \n          datosParseados.output.includes('Foto de cédula') ||\n          datosParseados.output.includes('El estudio que necesitas')) {\n\n        datosParseados.tipoPregunta = 'RESULTADOS';\n\n        datosParseados.output = \"Hola 👋 Para ayudarte con los resultados, por favor indica el tipo de estudio:\\n\\n🔬 Si es un examen de LABORATORIO (sangre, orina, heces, etc.) responde 'Laboratorio'.\\n📷 Si es un estudio de IMÁGENES (radiografía, ecografía, mamografía, etc.) responde 'Imágenes'.\\n\\nEn unos segundos te pediré los detalles necesarios.\";\n\n        datosParseados.text = datosParseados.output;\n        datosParseados.content = datosParseados.output;\n      }\n    }\n\n    if (datosParseados.output && typeof datosParseados.output === 'string') {\n      const match = datosParseados.output.match(/^\\s*equipo_asignado:\\s*\"([^\"]*)\"\\s*$/);\n      if (match) {\n        datosParseados.equipo_asignado = match[1];\n      }\n    }\n\n    const resultado = {\n      ...item.json,\n      ...datosParseados,\n      output: datosParseados.output,\n      tipoPregunta: datosParseados.tipoPregunta || null\n    };\n\n    // Red de seguridad: si el agente devolvió output vacío (intención sin\n    // respuesta), reemplazar por el fallback para que los nodos de envío nunca\n    // reciban un body vacío que YCloud rechaza.\n    if (typeof resultado.output !== 'string' || !resultado.output.trim()) {\n      resultado.output = fallbackTexto;\n      if (!resultado.tipoPregunta || resultado.tipoPregunta === 'FALLBACK') {\n        resultado.tipoPregunta = 'FALLBACK';\n      }\n      resultado.text = fallbackTexto;\n      resultado.content = fallbackTexto;\n    }\n\n    // SPEC 18: en modo conversacional (menu_enabled=false) isMenu SIEMPRE\n    // false: nunca se envía menú interactivo ni se detecta menú en el output.\n    let isMenuValue = false;\n    if (menuEnabled) {\n      if (datosParseados.isMenu === true) {\n        isMenuValue = true;\n      } else if (datosParseados.output && typeof datosParseados.output === 'string') {\n        const texto = datosParseados.output;\n        if (texto.includes('¡Hola! 😊 Bienvenido/a') || \n            texto.includes('Para ayudarte mejor, por favor selecciona') ||\n            texto.includes('¿Qué necesitas hoy?')) {\n          isMenuValue = true;\n        }\n      }\n    }\n    resultado.isMenu = isMenuValue;\n\n    let esPreguntaSiNo = false;\n    if (datosParseados.esPreguntaSiNo === true) {\n      esPreguntaSiNo = true;\n    } else if (datosParseados.output && typeof datosParseados.output === 'string') {\n      esPreguntaSiNo = detectarSiNo(datosParseados.output);\n    }\n    resultado.esPreguntaSiNo = esPreguntaSiNo;\n\n    const equipo = resultado.equipo_asignado;\n    let flow_name = '';\n    if (typeof datosParseados.flow_name === 'string' && datosParseados.flow_name.trim()) {\n      const f = datosParseados.flow_name.trim();\n      if (f.startsWith('flujo_')) {\n        flow_name = f;\n      } else if (mapeoFlow[f]) {\n        flow_name = mapeoFlow[f];\n      }\n    }\n    resultado.flow_name = flow_name || mapeoFlow[equipo] || flowPorDefecto;\n\n    // --- Ruteo determinista del menú (SPEC 13, solo menu_enabled=true) ---\n    // Si el usuario pide menú o la intención detectada es MENU, se fuerza\n    // el texto del menú guardado (con marca) e isMenu=true. La salida de la\n    // IA se ignora para este caso. En modo conversacional (SPEC 18) el\n    // bloque se omite: la IA responde con la introducción desde el RAG.\n    const textoUsuario = (item.json.text || '').toString().toLowerCase();\n    let esMenu = datosParseados.tipoPregunta === 'MENU';\n    if (!esMenu && textoUsuario) {\n      esMenu = keywordsMenu.some(k => k && textoUsuario.includes(k));\n    }\n    // Texto ultra-corto (≤2 caracteres) → menú determinista (SPEC 14).\n    if (!esMenu && textoUsuario && textoUsuario.length <= 2) {\n      esMenu = true;\n    }\n    if (menuEnabled && esMenu && menuTexto) {\n      resultado.output = menuTexto;\n      resultado.text = menuTexto;\n      resultado.content = menuTexto;\n      resultado.isMenu = true;\n      resultado.tipoPregunta = 'MENU';\n      resultado.equipo_asignado = '';\n      resultado.flow_name = '';\n      resultado.esPreguntaSiNo = false;\n    }\n\n    nuevosItems.push({ json: resultado });\n\n  } catch (e) {\n    // SPEC 36: misma recuperación que JSON_PARSE_ERROR (prosa o fallback) + ruteo.\n    const recuperacion = textoRecuperacion(item.json.output);\n    const errorItem = {\n      json: {\n        error: e.message,\n        original: item.json.output,\n        ...item.json,\n        ...mergeRouting(item.json),\n        flow_name: flowPorDefecto,\n        output: recuperacion,\n        text: recuperacion,\n        content: recuperacion,\n        tipoPregunta: 'FALLBACK'\n      }\n    };\n    nuevosItems.push(errorItem);\n  }\n}\n\nreturn nuevosItems;"
+      },
+      "id": "330e1f8a-1acc-4902-ba15-398d390bd340",
+      "name": "Separar_variables_en_json",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        48256,
+        18464
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dda4884d-04e1-451c-b3af-f5a3183f2580",
+              "name": "session_id",
+              "type": "string",
+              "value": "={{ $json.session_id }}"
+            },
+            {
+              "id": "70bff820-cfc3-4071-bcaa-4478eb7828e9",
+              "name": "conversation_id",
+              "type": "string",
+              "value": "={{ $('Cita_con_Equipo_asignado').item.json.conversation_id }}"
+            },
+            {
+              "id": "d80d48b5-7d3e-4e34-bf33-cf46fa3b4e5d",
+              "name": "account_id",
+              "type": "string",
+              "value": "={{ $('Cita_con_Equipo_asignado').item.json.account_id }}"
+            },
+            {
+              "id": "d784b741-4e38-4288-9223-4974592d75fb",
+              "name": "platform",
+              "type": "string",
+              "value": "={{ $('Cita_con_Equipo_asignado').item.json.platform }}"
+            },
+            {
+              "id": "1021f53b-9c20-4d37-abf1-1622ce5bbd86",
+              "name": "text",
+              "type": "string",
+              "value": "={{ $json.steps[0].nombre_mostrar }}"
+            },
+            {
+              "id": "4046b530-a78d-4676-b4ad-f2f8f2f81919",
+              "name": "output",
+              "type": "string",
+              "value": "={{ $json.steps[0].nombre_mostrar }}"
+            },
+            {
+              "id": "0aebd45e-44c0-4633-9710-c3af2e6d9422",
+              "name": "content",
+              "type": "string",
+              "value": "={{ $json.steps[0].nombre_mostrar }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dab8a2a6-ea8c-4fed-8190-a308cf78a782",
+      "name": "Agendar_cita",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        50256,
+        18576
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-API-Key",
+              "value": "93327d22f6546624889c7b967a1e4e95"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.whatsappPayload\n  ? JSON.stringify($json.whatsappPayload)\n  : JSON.stringify({\n      from: $json.account_id,\n      to: $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id,\n      type: \"text\",\n      text: { body: $json.content }\n    }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "45b19f11-50bb-4d19-9433-c3426293a005",
+      "name": "Enviar_mensaje_de_IA1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        51440,
+        17920
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-API-Key",
+              "value": "93327d22f6546624889c7b967a1e4e95"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"{{  $json.account_id }}\",\n  \"to\": \"{{ $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($json.content) }}\n  }\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "d0db134d-14da-48ce-bdef-b07b73e7e4e3",
+      "name": "Enviar_mensaje_de_IA2",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        50368,
+        18976
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "890f5802-1895-46b4-bfb3-c2f44596d4ce",
+              "name": "session_id",
+              "type": "string",
+              "value": "={{ $json.session_id }}"
+            },
+            {
+              "id": "e0d55966-2cdd-436b-b684-a8b11a217a2b",
+              "name": "conversation_id",
+              "type": "string",
+              "value": "={{ $json.conversation_id }}"
+            },
+            {
+              "id": "f33e3c5f-da1a-466a-b726-e12e19fdcb0b",
+              "name": "account_id",
+              "type": "string",
+              "value": "={{ $json.account_id }}"
+            },
+            {
+              "id": "53961174-87e8-4d3c-ae50-4da02dbac3c3",
+              "name": "modo",
+              "type": "string",
+              "value": "={{ $json.modo }}"
+            },
+            {
+              "id": "dcb665ab-5283-4902-bc0f-bff04a90180f",
+              "name": "nombre_mostrar",
+              "type": "string",
+              "value": "={{ $json.texto_para_usuario || $json.text || '' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4ebba6b2-5218-44a9-9cbc-3cb36e485b82",
+      "name": "tomar_parametros",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        47376,
+        19520
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-API-Key",
+              "value": "93327d22f6546624889c7b967a1e4e95"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"{{  $json.account_id }}\",\n  \"to\": \"{{ $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($json.nombre_mostrar) }}\n  }\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "f6171932-622e-43f7-9b34-8a40535f587f",
+      "name": "Enviar_mensaje_de_IA3",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        47808,
+        19680
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 3,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "menu_whatsapp_condition",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "leftValue": "={{\n  $json.platform === 'whatsapp' && \n  ($json.isMenu === true ||\n   (typeof $json.output === 'string' && $json.output.length > 0 &&\n    ($json.output.match(/[1-5]\\.\\s*(Precios|Servicios|Agendar|Tarjeta|Otra)/i) !== null ||\n     $json.output.includes('Bienvenido/a') ||\n     $json.output.includes('selecciona una opción'))))\n}}",
+              "rightValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f974f1e4-6e2f-4092-b4c4-2d9c34b2ec1c",
+      "name": "¿Enviar menú interactivo?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        48432,
+        18480
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nfor (const item of items) {\n  let phone = item.json.user_number || item.json.phone_number || item.json.session_id;\n  \n  if (!phone) {\n    item.json.phone_number_formatted = null;\n    continue;\n  }\n  \n  phone = String(phone);\n  if (!phone.startsWith('+')) {\n    phone = '+' + phone;\n  }\n  item.json.phone_number_formatted = phone;\n}\nreturn items;"
+      },
+      "id": "478409a1-9b8d-4254-97de-64c2616bb0fc",
+      "name": "Formatear número de teléfono",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        48752,
+        18624
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "=Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-API-Key",
+              "value": "93327d22f6546624889c7b967a1e4e95"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"{{ $json.account_id }}\",\n  \"to\": \"{{ $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id || $('Obtener_Info_basica').first().json.user_number }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($json.output) }}\n  }\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "118bf20c-4fe9-44f9-9667-c22b27ebc692",
+      "name": "Enviar texto despues del menu",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        51744,
+        17536
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 3,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "menu_whatsapp_condition",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "leftValue": "={{\n  $json.platform === 'whatsapp' && ($json.esPreguntaSiNo === true || $json.tipoPregunta === \"ESTATICO\" || $json.tipoPregunta === \"CITA_DIRECTA\" || $json.tipoPregunta === \"RESULTADOS\")\n}}",
+              "rightValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e906f646-3e5d-4b37-bb9a-7e95f5a8c1cb",
+      "name": "¿Enviar menú interactivo?1",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        51024,
+        18192
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst nuevosItems = [];\n\nfor (const item of items) {\n  const tipo = item.json.tipoPregunta;\n  const outputText = item.json.output;\n  let phone = item.json.user_number || item.json.phone_number || item.json.session_id;\n\n  if (phone && !phone.startsWith('+')) {\n    phone = '+' + phone;\n  }\n\n  let botones = [];\n\n  // PRECIOS - botones Sí/No\n  if (tipo === 'PRECIOS') {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_CITA_PRECIOS\", title: \"✅ Quiero cotización\" } },\n      { type: \"reply\", reply: { id: \"CANCELAR\", title: \"❌ No, gracias\" } }\n    ];\n  }\n  // SERVICIOS - botones Sí/No\n  else if (tipo === 'SERVICIOS') {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_CITA_SERVICIOS\", title: \"✅ Sí, quiero demo\" } },\n      { type: \"reply\", reply: { id: \"CANCELAR\", title: \"❌ No, gracias\" } }\n    ];\n  }\n  // TARJETA - botones Sí/No\n  else if (tipo === 'TARJETA') {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_TARJETA\", title: \"✅ Sí, contratar\" } },\n      { type: \"reply\", reply: { id: \"CANCELAR\", title: \"❌ No, gracias\" } }\n    ];\n  }\n  // CITA_DIRECTA - botones para elegir Demo o Asesoría\n  else if (tipo === 'CITA_DIRECTA') {\n    botones = [\n      { type: \"reply\", reply: { id: \"MEDIOS_PROPIOS\", title: \"💰 Demo Chatbot\" } },\n      { type: \"reply\", reply: { id: \"SEGURO_MEDICO\", title: \"🩺 Asesoría Odoo\" } }\n    ];\n  }\n  else if (tipo === 'RESULTADOS') {\n    botones = [\n      { type: \"reply\", reply: { id: \"LABORATORIO\", title: \"🔬 Laboratorio\" } },\n      { type: \"reply\", reply: { id: \"IMAGENES\", title: \"📷 Imágenes\" } }\n    ];\n  }\n  // ESTATICO - horario, promociones, resultados (botones: Menú y Salir)\n  else if (tipo === 'ESTATICO') {\n    botones = [\n      { type: \"reply\", reply: { id: \"MENU_PRINCIPAL\", title: \"🔙 Menú\" } },\n      { type: \"reply\", reply: { id: \"SALIR\", title: \"👋 Salir\" } }\n    ];\n  }\n  // ✅ NUEVO: Si es pregunta Sí/No genérica sin tipo específico\n  else if (item.json.esPreguntaSiNo === true) {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_SI\", title: \"✅ Sí\" } },\n      { type: \"reply\", reply: { id: \"CONFIRMAR_NO\", title: \"❌ No\" } }\n    ];\n  }\n  // Si no hay tipoPregunta, no enviamos botones (se envía como texto normal)\n  else {\n    nuevosItems.push(item);\n    continue;\n  }\n\n  // Construir el payload de WhatsApp\n  const whatsappPayload = {\n    messaging_product: \"whatsapp\",\n    recipient_type: \"individual\",\n    to: phone,\n    type: \"interactive\",\n    interactive: {\n      type: \"button\",\n      body: { text: outputText },\n      action: { buttons: botones }\n    }\n  };\n\n  nuevosItems.push({\n    json: {\n      ...item.json,\n      whatsappPayload: whatsappPayload,\n      phone_number_formatted: phone\n    }\n  });\n}\n\nreturn nuevosItems;"
+      },
+      "id": "49d712ee-a95a-43f6-b939-e83bfbe7d841",
+      "name": "Construir_botones_WhatsApp",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        51296,
+        17648
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {},
+      "id": "d4d53618-1a65-4c6e-90c1-fe5e2699a603",
+      "name": "Fin menú WhatsApp1",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        51856,
+        17728
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "d2edb9f7-4a7f-48c7-abe0-7caf48618842",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        46896,
+        19024
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "dc0d6b23-04d6-4acd-a3b5-72d370b4a5c8",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        46896,
+        19024
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "31a22a58-12db-48f3-aa18-1c48296459b7",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        46896,
+        19024
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "c0f303cd-0ad9-4c68-9863-bfaef52f2f69",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        46976,
+        19104
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "225c502c-8408-44d9-b4ad-9905eeda86bb",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        46976,
+        19104
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "6865e4a1-c3b0-4748-9d65-2bd25dfb2fc0",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        46976,
+        19104
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Procesa la data de entrada, y si es agendar cita con el primer paso chequea el telefono para buscar ya variables en bd y el suuario tipeee menos",
+        "height": 480,
+        "width": 560
+      },
+      "id": "f32857db-0488-46b1-8dcd-62704798e209",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        45920,
+        19296
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-API-Key",
+              "value": "93327d22f6546624889c7b967a1e4e95"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"{{  $json.account_id }}\",\n  \"to\": \"{{ $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($json.output) }}\n  }\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "cfa581a4-5f62-470b-864e-d9d5d24f1a22",
+      "name": "Enviar_mensaje_de_IA",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        48960,
+        18608
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.ODOO_APP_URL_20 || 'https://lead20.integraia.lat' }}/ai_chatbot_1_portal/configuracion_agente",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": {{ JSON.stringify($json.text) }},\n  \"image_url\": {{ JSON.stringify($json.image_url || '') }},\n  \"session_id\": {{ JSON.stringify($json.session_id) }},\n  \"conversation_id\": {{ JSON.stringify($json.conversation_id) }},\n  \"account_id\": {{ JSON.stringify($json.account_id) }},\n  \"platform\": {{ JSON.stringify($json.platform) }},\n  \"token\": {{ JSON.stringify($env.CHATBOT_API_TOKEN || '') }}\n}",
+        "options": {
+          "timeout": 30000
+        },
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-chatbot-token",
+              "value": "={{ $env.CHATBOT_API_TOKEN || '' }}"
+            }
+          ]
+        },
+        "sendHeaders": true
+      },
+      "id": "574b2c29-5440-403f-ac16-224c810de76a",
+      "name": "Obtener_configuracion_agente",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        47376,
+        19328
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $env.N8N_SUBFLOW_YCLOUD_SIMPLE_ID_20 || 'jlHU9VPqKMuwuxNh' }}",
+          "cachedResultUrl": "/workflow/jlHU9VPqKMuwuxNh",
+          "cachedResultName": "yclod-simple_1_subflow"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "text": "={{ $json.text }}",
+            "channel": "={{ $json.channel }}",
+            "content": "={{ $json.content }}",
+            "platform": "={{ $json.platform }}",
+            "file_type": "={{ $json.file_type }}",
+            "image_url": "={{ $json.image_url }}",
+            "user_name": "={{ $json.user_name }}",
+            "account_id": "={{ $json.account_id }}",
+            "session_id": "={{ $json.session_id }}",
+            "user_number": "={{ $json.user_number }}",
+            "message_type": "={{ $json.message_type }}",
+            "phone_number": "={{ $json.user_number }}",
+            "user_message": "={{ $json.text }}",
+            "conversation_id": "={{ $json.conversation_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "text",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "text",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "session_id",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "session_id",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "account_id",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "account_id",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversation_id",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "conversation_id",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message_type",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "message_type",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_name",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "user_name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_number",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "user_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "platform",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "platform",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "channel",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "channel",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "content",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "file_type",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "file_type",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone_number",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "phone_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_message",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "user_message",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "image_url",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "image_url",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agente_desactivado",
+              "type": "boolean",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "agente_desactivado",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "b5d32606-c468-4384-bfc6-57322a7b56bc",
+      "name": "Call 'yclod-simple_1_subflow'",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        46112,
+        19440
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e21073c0-f010-4748-8930-f722ab2cfeb2",
+      "name": "Postgres PGVector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "position": [
+        48048,
+        18944
+      ],
+      "typeVersion": 1.3,
+      "credentials": {
+        "postgres": {
+          "id": "KTEgdnqa0zFjxO2W",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "0c2068dd-e6c4-4df6-9352-c79f9a50fe65",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        48416,
+        18976
+      ],
+      "typeVersion": 1.3,
+      "credentials": {
+        "openAiApi": {
+          "id": "SynY9HmZH2SsZkWD",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Aquí puedes tomar los documentos cargados como base de información. Para responder preguntas relacionadas ",
+        "fallbackOutput": "HERRAMIENTA_RAG_INDISPONIBLE: la consulta a la base de conocimiento fallo por tiempo o red. No la reintentes mas de una vez. Responde al usuario con un problema momentaneo al consultar la informacion y ofrece que un asesor lo contacte."
+      },
+      "id": "181450b3-130e-4c88-9534-22e8b9104885",
+      "name": "Base_Conocimiento_RAG",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "position": [
+        48128,
+        18720
+      ],
+      "typeVersion": 1.1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 3,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "90c03bba-445e-4a83-be3b-308e3b2af0f4",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.flow_name }}",
+              "rightValue": "flujo_carrito_compra"
+            },
+            {
+              "id": "f75d5c9d-26be-455d-aa2c-80968f195096",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.equipo_asignado }}",
+              "rightValue": "flujo_carrito_compra"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "68406b1a-8591-4182-b276-ea25c5d92341",
+      "name": "¿Flujo_carrito?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        49328,
+        18288
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 3,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "modo_carrito_condition",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.modo_carrito }}",
+              "rightValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6e57d62b-ab81-4a01-b78d-612db585b616",
+      "name": "¿Modo_carrito?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        47648,
+        19328
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $env.N8N_SUBFLOW_YCLOUD_CARRITO_ID_20 || 'c0b40d4402d2418baf47f1d1' }}",
+          "cachedResultUrl": "/workflow/c0b40d4402d2418baf47f1d1",
+          "cachedResultName": "ycloud_carrito_subflow"
+        },
+        "workflowInputs": {
+          "value": {
+            "text": "={{ $json.text }}",
+            "channel": "={{ $json.channel }}",
+            "content": "={{ $json.text }}",
+            "platform": "={{ $json.platform }}",
+            "file_type": "={{ $json.file_type }}",
+            "image_url": "={{ $json.image_url }}",
+            "user_name": "={{ $json.user_name }}",
+            "account_id": "={{ $json.account_id }}",
+            "session_id": "={{ $json.session_id }}",
+            "user_number": "={{ $json.user_number }}",
+            "message_type": "={{ $json.message_type }}",
+            "phone_number": "={{ $json.user_number }}",
+            "user_message": "={{ $json.text }}",
+            "conversation_id": "={{ $json.conversation_id }}",
+            "phone_number_formatted": "={{ $json.phone_number_formatted || $json.user_number }}"
+          },
+          "schema": [
+            {
+              "id": "phone_number_formatted",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "phone_number_formatted",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "text",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "text",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "session_id",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "session_id",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "account_id",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "account_id",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversation_id",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "conversation_id",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message_type",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "message_type",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_name",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "user_name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_number",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "user_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "platform",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "platform",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "channel",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "channel",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "content",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "file_type",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "file_type",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone_number",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "phone_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_message",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "user_message",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "image_url",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "image_url",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agente_desactivado",
+              "type": "boolean",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "agente_desactivado",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "e2d611a3-d69e-47e5-ae5f-245d1a84ef13",
+      "name": "Call 'ycloud_carrito_subflow (modo)'",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        48320,
+        19472
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $env.N8N_SUBFLOW_YCLOUD_CARRITO_ID_20 || 'c0b40d4402d2418baf47f1d1' }}",
+          "cachedResultUrl": "/workflow/c0b40d4402d2418baf47f1d1",
+          "cachedResultName": "ycloud_carrito_subflow"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "channel": "={{ $json.platform }}",
+            "content": "={{ $json.output }}",
+            "platform": "={{ $json.platform }}",
+            "account_id": "={{ $json.account_id }}",
+            "session_id": "={{ $json.session_id }}",
+            "phone_number": "={{ $json.conversation_id }}",
+            "user_message": "={{ $json.output }}",
+            "conversation_id": "={{ $json.conversation_id }}",
+            "text": "={{ $json.output }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number_formatted",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "phone_number_formatted",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "text",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "text",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "session_id",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "session_id",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "account_id",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "account_id",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversation_id",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "conversation_id",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message_type",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "message_type",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_name",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "user_name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_number",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "user_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "platform",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "platform",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "channel",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "channel",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "content",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "file_type",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "file_type",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone_number",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "phone_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_message",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "user_message",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "image_url",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "image_url",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "agente_desactivado",
+              "type": "boolean",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "agente_desactivado",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "bc79d3aa-2ba4-4138-a31b-e382ccaa0bba",
+      "name": "Call 'ycloud_carrito_subflow (flujo)'",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        50096,
+        19136
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "jsCode": "let original = $json; // SPEC 49: la respuesta Odoo trae session/account\nconst texto = $json.texto_para_usuario || $json.text || '';\nconst botones = Array.isArray($json.botones) ? $json.botones.filter(Boolean).slice(0, 3) : [];\nconst to = original.phone_number_formatted || original.user_number || original.phone_number\n  || original.session_id || $json.session_id;\nconst from = original.account_id || $json.account_id;\n// SPEC 40: la lista de categorias (buscador) tiene prioridad sobre los\n// botones — un mensaje interactivo solo admite un tipo de accion.\nconst listaCat = $json.lista_categorias;\nconst secciones = listaCat && Array.isArray(listaCat.sections) ? listaCat.sections : [];\nlet whatsappPayload = null;\nif (secciones.length && to && from) {\n  whatsappPayload = {\n    from: from,\n    to: to,\n    type: 'interactive',\n    interactive: {\n      type: 'list',\n      body: { text: texto },\n      action: { button: listaCat.button || 'Ver categorias', sections: secciones }\n    }\n  };\n} else if (botones.length && to) {\n  whatsappPayload = {\n    from: from,\n    to: to,\n    type: \"interactive\",\n    interactive: {\n      type: \"button\",\n      body: { text: texto },\n      action: { buttons: botones.map(b => ({ type: \"reply\", reply: { id: b, title: b } })) }\n    }\n  };\n}\nconst salida = [{ json: {\n  ...original,\n  ...$json,\n  output: texto,\n  text: texto,\n  content: texto,\n  modo: $json.modo || original.modo,\n  finalizado: $json.finalizado || false,\n  imagenes: $json.imagenes || [],\n  botones,\n  whatsappPayload\n} }];\n\n// SPEC 39: un media-message por producto con imagen (catálogo/búsqueda).\n// El nodo de envío ya prefiere whatsappPayload: cada item extra envía su\n// imagen con caption, después del texto (índice + botones).\nconst imagenes = Array.isArray($json.imagenes) ? $json.imagenes : [];\nif (to && from) {\n  for (const img of imagenes) {\n    // typeof: un string (codigo viejo de Odoo) expone el metodo legacy\n    // String.prototype.link (truthy) y no debe pasar como imagen.\n    if (!img || typeof img.link !== 'string' || !img.link) continue;\n    salida.push({ json: {\n      ...original,\n      ...$json,\n      whatsappPayload: {\n        from: from,\n        to: to,\n        type: 'image',\n        image: { link: img.link, caption: img.caption || '' }\n      }\n    } });\n  }\n}\nreturn salida;"
+      },
+      "id": "936ff2a2-6fe7-4a3e-97cc-24550cef7520",
+      "name": "Preparar_salida_carrito3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        46848,
+        18864
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.whatsappPayload ? JSON.stringify($json.whatsappPayload) : JSON.stringify({ from: $json.account_id, to: $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id, type: 'text', text: { body: $json.texto_para_usuario || $json.text || $json.content } }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "3ac5ca0c-19df-4a27-ba3f-c75c42996019",
+      "name": "Enviar_salida_carrito3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        47056,
+        18864
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cD4Us3WKlSTj5nq5",
+          "name": "YCloud API (SPEC48)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Preparar_salida_carrito": {
+      "main": [
+        [
+          {
+            "node": "Enviar_salida_carrito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar_salida_carrito1": {
+      "main": [
+        [
+          {
+            "node": "Enviar_salida_carrito1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar_salida_carrito2": {
+      "main": [
+        [
+          {
+            "node": "Enviar_salida_carrito2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Seteamos_variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seteamos_variables": {
+      "main": [
+        [
+          {
+            "node": "Pregunta_el_Cliente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Indentifica_canal": {
+      "main": [
+        [
+          {
+            "node": "Call 'yclod-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'yclod-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'yclod-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'yclod-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configurar_IA_Responda?": {
+      "main": [
+        [
+          {
+            "node": "End1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Indentifica_canal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pregunta_el_Cliente?": {
+      "main": [
+        [
+          {
+            "node": "Configurar_IA_Responda?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dueno_o_Bot_responde",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente_Informacion_basica",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrar_ChattWoot": {
+      "main": [
+        [
+          {
+            "node": "Obtener_Info_basica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener_Info_basica": {
+      "main": [
+        [
+          {
+            "node": "Obtener_Contacto_YCloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener_Contacto_YCloud": {
+      "main": [
+        [
+          {
+            "node": "Ajustar_agente_desactivado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ajustar_agente_desactivado": {
+      "main": [
+        [
+          {
+            "node": "Pregunta_el_Cliente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta_o_agendar_cita": {
+      "main": [
+        [
+          {
+            "node": "Preparar_salida_carrito3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Obtener_configuracion_agente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "tomar_parametros",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "tomar_parametros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente_Informacion_basica",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente_Informacion_basica": {
+      "main": [
+        [
+          {
+            "node": "Separar_variables_en_json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unificar_salida": {
+      "main": [
+        [
+          {
+            "node": "¿Enviar menú interactivo?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cita_con_Equipo_asignado": {
+      "main": [
+        [
+          {
+            "node": "¿Flujo_carrito?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unificar_salida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separar_variables_en_json": {
+      "main": [
+        [
+          {
+            "node": "¿Enviar menú interactivo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "paso_0_inicio_agendar": {
+      "main": [
+        [
+          {
+            "node": "Agendar_cita",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agendar_cita": {
+      "main": [
+        [
+          {
+            "node": "Enviar_mensaje_de_IA2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tomar_parametros": {
+      "main": [
+        [
+          {
+            "node": "Enviar_mensaje_de_IA3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Enviar menú interactivo?": {
+      "main": [
+        [
+          {
+            "node": "Formatear número de teléfono",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cita_con_Equipo_asignado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear número de teléfono": {
+      "main": [
+        [
+          {
+            "node": "Enviar_mensaje_de_IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar texto despues del menu": {
+      "main": [
+        [
+          {
+            "node": "Fin menú WhatsApp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Call 'yclod-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Enviar menú interactivo?1": {
+      "main": [
+        [
+          {
+            "node": "Construir_botones_WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar_mensaje_de_IA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Construir_botones_WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto despues del menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener_configuracion_agente": {
+      "main": [
+        [
+          {
+            "node": "¿Modo_carrito?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'yclod-simple_1_subflow'": {
+      "main": [
+        [
+          {
+            "node": "Consulta_o_agendar_cita",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Base Conocimiento": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres PGVector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Base_Conocimiento_RAG",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Base_Conocimiento_RAG",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Base_Conocimiento_RAG": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente_Informacion_basica",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Flujo_carrito?": {
+      "main": [
+        [
+          {
+            "node": "Call 'ycloud_carrito_subflow (flujo)'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "paso_0_inicio_agendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Modo_carrito?": {
+      "main": [
+        [
+          {
+            "node": "Call 'ycloud_carrito_subflow (modo)'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agente_Informacion_basica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar_salida_carrito3": {
+      "main": [
+        [
+          {
+            "node": "Enviar_salida_carrito3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "active": false,
+  "versionId": "c5a0b113-2ce5-4ebd-b735-aedff26cdd0f",
+  "id": "L2r9IMI9lGrERuZq"
+}

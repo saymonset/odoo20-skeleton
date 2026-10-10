@@ -1,0 +1,2452 @@
+{
+  "name": "chatbot_create_lead_0_con_menu_whatsapp_20",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Procesa la data de entrada, y si es agendar cita  con el primer paso chequea el telefono para buscar  ya variables en bd y el suuario tipee menos",
+        "height": 480,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -928,
+        880
+      ],
+      "typeVersion": 1,
+      "id": "65c8fda3-de16-4e8f-a1f3-4ccbc904c25e",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        2000
+      ],
+      "id": "c04e8d29-6aaa-4339-b8f2-4e95d611c072",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1680,
+        2384
+      ],
+      "id": "7bbee3b6-dc99-4228-9909-41cf8f3e813c",
+      "name": "When chat message received",
+      "webhookId": "d7373d29-7364-41f7-a73f-bd24b72daeea"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "96996d45-ddf6-4f34-850c-6135282de201",
+              "name": "text",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "886653c3-a819-4881-a860-62b44509d731",
+              "name": "session_id",
+              "value": "={{ $json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "ee045dc3-b0e6-4366-b179-2bb78781425b",
+              "name": "account_id",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "4d37a5ee-0b5e-40e0-a5ca-4dc372f0a1e6",
+              "name": "conversation_id",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "3eb0a246-8cb9-477b-a0df-460f3c6b3b8a",
+              "name": "message_type",
+              "value": "incoming",
+              "type": "string"
+            },
+            {
+              "id": "af85fc32-b8b9-43a3-a666-403ad84a8e5f",
+              "name": "user_name",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "49e39027-d5f1-4abb-9e53-22545e9b39c5",
+              "name": "user_number",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "d215ec30-76a4-4011-a990-a484c225565b",
+              "name": "platform",
+              "value": "Channel::Whatsapp",
+              "type": "string"
+            },
+            {
+              "id": "fbce67e5-7649-4e4f-86da-7022b5a7a047",
+              "name": "channel",
+              "value": "Channel::Whatsapp",
+              "type": "string"
+            },
+            {
+              "id": "cffc4318-41d4-470e-9204-0487f399268d",
+              "name": "content",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "80e133a1-a3f2-456a-b8b9-c777b7febaf9",
+              "name": "file_type",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "d62b3d9d-284f-4bdf-a2c3-b97776ba817d",
+              "name": "phone_number",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "f5e36c51-bfc3-47c2-98c4-309b259890f5",
+              "name": "user_message",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "32c13a58-cbaf-45d2-ae7d-faa18aa1f017",
+              "name": "image_url",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "d2dcdf4c-9ebb-4ac9-8183-fab3bafbce84",
+              "name": "agente_desactivado",
+              "value": "on",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1280,
+        2320
+      ],
+      "id": "628a99b2-75d1-40dc-8b1f-9c88f81bc251",
+      "name": "Seteamos_variables"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "Channel::Whatsapp",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "4313ad77-8015-436a-a40d-3ef7cab78263"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Whatsapp"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "37f80664-6420-4c2b-b965-b65ec4656310",
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "Channel::Instagram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Instagram"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "cd226af3-e973-4fa2-adee-7b4988db3d90",
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "Channel::facebook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "facebook"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6bb7392d-9fa9-4da8-86ee-94ec3e7385e1",
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "Channel::FacebookPage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "facebook"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c6773713-6da3-44c1-8df0-e8957d72913e",
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "isNotEmpty"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "otro"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d5d5dc87-03c8-4225-9c54-012d36a91949",
+                    "leftValue": "={{ $json.channel }}",
+                    "rightValue": "Channel::Telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Telegram"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -352,
+        2304
+      ],
+      "id": "5c788a57-6454-4926-8239-68bef225dfb5",
+      "name": "Indentifica_canal"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        2672
+      ],
+      "id": "7ba2725c-2442-4fc0-889a-70243daf972b",
+      "name": "Dueno_o_Bot_responde"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3c30564f-7df5-4564-b859-e13889009357",
+                    "leftValue": "={{ $json.agente_desactivado }}",
+                    "rightValue": "off",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "respuesta_humana"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1239d7b6-e41f-4d3b-a7b7-c6d691a43e69",
+                    "leftValue": "={{ $json.agente_desactivado }}",
+                    "rightValue": "on",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Respuesta IA"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -736,
+        2320
+      ],
+      "id": "70969300-a946-4267-b314-2dce0b6ddb4b",
+      "name": "Configurar_IA_Responda?"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3c30564f-7df5-4564-b859-e13889009357",
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "incoming",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "incoming"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8b266895-9c0c-4a53-804d-2213bca3a1a0",
+                    "leftValue": "={{ $json.message_type }}",
+                    "rightValue": "outgoing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "outcoming"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -976,
+        2336
+      ],
+      "id": "637985c1-e784-4490-bc9c-4c6db505b511",
+      "name": "Pregunta_el_Cliente?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        2048
+      ],
+      "id": "5384bb14-60de-4a3d-90c3-6fbf38ba8ef7",
+      "name": "End1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.session_id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1808,
+        2032
+      ],
+      "id": "7d062f8f-7778-4884-84da-00b59532572d",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatwoot-integraia-20",
+        "options": {},
+        "responseMode": "onReceived"
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1792,
+        1648
+      ],
+      "id": "982e1bd9-853f-45aa-a04c-d2e32471520d",
+      "name": "Entrar_ChattWoot",
+      "webhookId": "f2f3dab4-9ee7-4ad7-9fe8-96f79468b1f4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b9b41b4-ef98-4699-80eb-24e70dbee117",
+              "name": "=text",
+              "value": "={{ $json.body.conversation.messages[0].content }}",
+              "type": "string"
+            },
+            {
+              "id": "0f98afd1-e2e6-4c4d-9e9f-6e38c87694c6",
+              "name": "session_id",
+              "value": "={{ $json.body.conversation.contact_inbox.source_id }}",
+              "type": "string"
+            },
+            {
+              "id": "9cbd2d29-4e32-46fd-bbea-88317ec7681d",
+              "name": "account_id",
+              "value": "={{ $json.body.conversation.messages[0].account_id }}",
+              "type": "string"
+            },
+            {
+              "id": "ddcd14fb-bfd1-4f23-a0e0-7d0fa54e8719",
+              "name": "conversation_id",
+              "value": "={{ $json.body.conversation?.id || $json.body.conversation.messages?.[0]?.conversation_id || $json.body.conversation.messages?.[0]?.conversation?.id || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "9052a8a2-5a39-4b6f-a44f-728e2e7c2c41",
+              "name": "message_type",
+              "value": "={{ $json.body.message_type }}",
+              "type": "string"
+            },
+            {
+              "id": "c76e6bbf-22cf-4dd8-ae67-49c5801c5be1",
+              "name": "user_name",
+              "value": "={{ $json.body.sender.account.name }}",
+              "type": "string"
+            },
+            {
+              "id": "b16fbd53-b6a3-4e0b-ac12-01912379a2fc",
+              "name": "user_number",
+              "value": "={{ $json.body.sender.phone_number }}",
+              "type": "string"
+            },
+            {
+              "id": "327aa426-279e-4d47-b4a9-2910e9b62282",
+              "name": "platform",
+              "value": "={{ $json.body.conversation.channel.includes('Whatsapp') ? 'whatsapp' : ($json.body.conversation.channel.includes('Facebook') ? 'facebook' : ($json.body.conversation.channel.includes('Instagram') ? 'instagram' : ($json.body.conversation.channel.includes('Telegram') ? 'telegram' : 'otro'))) }}",
+              "type": "string"
+            },
+            {
+              "id": "f921da3f-2311-4646-a2c9-152401811c3f",
+              "name": "message_type",
+              "value": "={{ $json.body.message_type }}",
+              "type": "string"
+            },
+            {
+              "id": "12bb3da8-0d23-45ec-8ed8-a962d512d0fb",
+              "name": "channel",
+              "value": "={{ $json.body.conversation.channel }}",
+              "type": "string"
+            },
+            {
+              "id": "e70d5c0a-a243-4625-af3e-c40ca295cdef",
+              "name": "content",
+              "value": "={{ $json.body.conversation.messages[0].content }}",
+              "type": "string"
+            },
+            {
+              "id": "8a12bb4d-d77a-466b-ac20-851d770c34c0",
+              "name": "file_type",
+              "value": "={{ $json.body.conversation.messages[0].attachments?.[0]?.file_type || null }}",
+              "type": "string"
+            },
+            {
+              "id": "664d94bf-9a93-472e-8d11-887f1f82af70",
+              "name": "phone_number",
+              "value": "={{ $json.body.sender.phone_number }}",
+              "type": "string"
+            },
+            {
+              "id": "31829d53-6dc4-4a0a-829f-6a203803d8ee",
+              "name": "user_name",
+              "value": "={{ $json.body.sender.account.name }}",
+              "type": "string"
+            },
+            {
+              "id": "1ca7bf91-1d72-4995-a578-12c0aa68da8e",
+              "name": "image_url",
+              "value": "={{ $json.body.attachments && $json.body.attachments[0] && $json.body.attachments[0].data_url ? $json.body.attachments[0].data_url : '' }}",
+              "type": "string"
+            },
+            {
+              "id": "9741fd66-6a23-47b2-a5b1-0acb8401af6b",
+              "name": "agente_desactivado",
+              "value": "={{ ($json.body.conversation.labels || []).some(l => (l || '').replace(/^#+/, '') === 'agente_desactivado') ? 'off' : 'on' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1232,
+        1920
+      ],
+      "id": "49071078-1486-4f28-ab2f-3a31ffa634b5",
+      "name": "Obtener_Info_basica"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "13990ce7-e3b4-4056-9e7d-4eee97e1f577",
+                    "leftValue": "={{ $json.modo }}",
+                    "rightValue": "MENU_PRINCIPAL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "or"
+              },
+              "renameOutput": true,
+              "outputKey": "MENU_PRINCIPAL"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "acc9bba6-bb76-43a8-8145-33b4a28ccfb7",
+                    "leftValue": "={{ $json.modo }}",
+                    "rightValue": "FLUJO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "FLUJO"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e4b89e53-5df8-4322-8bc7-9dacf87edc1e",
+                    "leftValue": "={{ $json.modo }}",
+                    "rightValue": "COMPLETADO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "COMPLETADO"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        992,
+        2576
+      ],
+      "id": "6438dae6-edbe-4c7c-8916-239d526870c0",
+      "name": "Consulta_o_agendar_cita"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {
+          "maxTokens": 3000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1696,
+        2032
+      ],
+      "id": "a8d09799-2081-492e-a8e3-8811c3ffe51a",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "XflpesBw28TN2BKL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Mensaje del usuario: {{ $json.text }}\nURL de imagen: {{ $json.image_url }}\nSession ID: {{ $json.session_id }}\nConversation ID: {{ $json.conversation_id }}\nAccount ID: {{ $json.account_id }}\nPlatform: {{ $json.platform }}\nFecha/hora actual (debes usarla en timestamp_actividad): {{ $now }}\n\n---\n\n\nPASOS DE EJECUCIÓN:\n1. Si el usuario hace preguntas sobre el negocio (precios, planes, servicios, requisitos, horarios, políticas), DEBES consultar PRIMERO la herramienta Base_Conocimiento_RAG.\n2. Una vez obtenida la información de la herramienta (o tras evaluar la imagen/situación), genera tu RESPUESTA FINAL.\n\nFORMATO DE SALIDA (Aplica solo a la respuesta final):\n- Tu respuesta final debe ser ÚNICAMENTE un objeto JSON válido, sin texto adicional, sin markdown (```json), sin comillas escapadas.\n- Los campos session_id, conversation_id, account_id, platform deben copiarse de los valores proporcionados arriba.\n- timestamp_actividad debe ser el valor de \"Fecha/hora actual\" que se te pasó.\n- Si no encuentras información en la herramienta, NO la inventes: responde en el campo JSON correspondiente ofreciendo agendar asesoría/demo o conectar con el dueño.",
+        "options": {
+          "systemMessage": "={{ $json.system_prompt || \"Eres un asistente virtual. Responde unicamente con un objeto JSON valido con las claves output, tipoPregunta, isMenu, equipo_asignado, flow_name, session_id, conversation_id, account_id, platform y timestamp_actividad.\" }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1712,
+        1776
+      ],
+      "id": "4d4e070b-d8b7-472c-ac4f-b4d7b71c90fa",
+      "name": "Agente_Informacion_basica"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst nuevosItems = [];\n\nfor (const item of items) {\n  const nuevoItem = {\n    json: {\n      ...item.json,\n      text: item.json.output,\n      content: item.json.output\n    }\n  };\n  nuevosItems.push(nuevoItem);\n}\n\nreturn nuevosItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2784,
+        1728
+      ],
+      "id": "e2b2464c-63bd-4f6c-b059-57d2598f6995",
+      "name": "Unificar_salida"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3a4922be-cbaa-4bb1-8614-6d8b82e4f404",
+              "leftValue": "={{ $json.equipo_asignado }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2480,
+        1616
+      ],
+      "id": "857e3c14-0afc-4ec1-b669-1be8d43647cb",
+      "name": "Cita_con_Equipo_asignado"
+    },
+    {
+      "parameters": {
+        "content": "## Solo responde la parte estatica de preguntas",
+        "height": 528,
+        "width": 1168
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1536,
+        1632
+      ],
+      "typeVersion": 1,
+      "id": "95123c69-14c3-40aa-884c-8edc1166922e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## I'Se canaliza Instagram, faceboook, whatsapp etc"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        944,
+        2448
+      ],
+      "typeVersion": 1,
+      "id": "b566c734-1867-462f-909d-169ae27c91c6",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{ $env.N8N_SUBFLOW_CHATBOT_SIMPLE_ID_20 || 'BOjWNcGBPzFAhfNy5h27P' }}",
+          "mode": "id",
+          "cachedResultUrl": "/workflow/BOjWNcGBPzFAhfNy5h27P",
+          "cachedResultName": "chatbot-simple_1_subflow"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "text": "={{ $json.text }}",
+            "session_id": "={{ $json.session_id }}",
+            "platform": "={{ $json.platform }}",
+            "image_url": "={{ $json.image_url }}",
+            "account_id": "={{ $json.account_id }}",
+            "conversation_id": "={{ $json.conversation_id }}",
+            "message_type": "={{ $json.message_type }}",
+            "user_name": "={{ $json.user_name }}",
+            "user_number": "={{ $json.user_number }}",
+            "channel": "={{ $json.channel }}",
+            "file_type": "={{ $json.file_type }}",
+            "content": "={{ $json.text }}",
+            "phone_number": "={{ $json.user_number }}",
+            "user_message": "={{ $json.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "account_id",
+              "displayName": "account_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "conversation_id",
+              "displayName": "conversation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "message_type",
+              "displayName": "message_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "user_number",
+              "displayName": "user_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "content",
+              "displayName": "content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "file_type",
+              "displayName": "file_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "user_message",
+              "displayName": "user_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "image_url",
+              "displayName": "image_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "agente_desactivado",
+              "displayName": "agente_desactivado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        2592
+      ],
+      "id": "0e365049-0255-4046-9b64-2c887a7f1f06",
+      "name": "Call 'chatbot-simple_1_subflow'"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.ODOO_APP_URL_20 || 'https://lead20.integraia.lat' }}/ai_chatbot_1_portal/inicioagendar",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"session_id\": \"{{ $json.session_id }}\",\n  \"conversation_id\":\"{{ $json.conversation_id }}\",\n  \"account_id\":\"{{ $json.account_id }}\",\n   \"name_flow\": \"{{$json.flow_name || 'flujo_agendamiento_default'}}\",\n   \"equipo_asignado\": \"{{$json.equipo_asignado|| \"\"}}\",\n   \"plataforma\": \"{{ $(\"Call 'chatbot-simple_1_subflow'\").item.json.platform || 'whatsapp' }}\",\n   \"mensaje_usuario\": {{ JSON.stringify($('Obtener_configuracion_agente').item.json.text || '') }}\n}\n",
+        "options": {
+          "timeout": 30000
+        },
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-chatbot-token",
+              "value": "={{ $env.CHATBOT_API_TOKEN || '' }}"
+            }
+          ]
+        },
+        "sendHeaders": true
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2848,
+        1008
+      ],
+      "id": "b387c528-4716-4021-8f0c-7398ead3cab3",
+      "name": "paso_0_inicio_agendar",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Separar_variables_en_json - versión con recuperación extra para strings como: {}, \"equipo_asignado\":...\nconst items = $input.all();\nconst nuevosItems = [];\n\nfunction detectarSiNo(texto) {\n  if (!texto || typeof texto !== 'string') return false;\n  const patrones = [\n    /\\b(sí|si)\\s*\\/\\s*no\\b/i,\n    /\\b(aceptas|confirmas|estás de acuerdo|quieres|deseas|te gustaría)\\b.*\\?/i,\n    /^.*\\?.*(sí|si).*(no).*$/i,\n    /¿(deseas|quieres|te gustaría|estás seguro|aceptas)/i,\n    /\\b(yes|no)\\b/i,\n    /\\b(responder (sí|si|no))\\\\b/i\n  ];\n  return patrones.some(p => p.test(texto));\n}\n\nconst mapeoFlowBase = {\n  'Agendamiento_Directo': 'flujo_agendamiento_directo',\n  'Agendamiento_Precios': 'flujo_agendamiento_precios',\n  'Agendamiento_Servicios': 'flujo_agendamiento_servicios',\n  'Agendamiento_Otra_Consulta': 'flujo_agendamiento_otra_consulta',\n  'Ventas': 'flujo_ventas',\n  'CITAS_MP': 'flujo_citas_medios_propios',\n  'CITAS_SEGUROS': 'flujo_citas_seguro',\n  'RESULTADOS_LAB': 'flujo_resultados_laboratorio',\n  'RESULTADOS_IMAGENES': 'flujo_resultados_imagenes'\n};\n\n// Merge dinámico: Odoo amplía el mapeo base con flow_map (defaults preservados).\nlet flowMapOdoo = {};\ntry {\n  flowMapOdoo = $('Obtener_configuracion_agente').item.json.flow_map || {};\n} catch (e) {\n  flowMapOdoo = {};\n}\nconst mapeoFlow = Object.assign({}, mapeoFlowBase, flowMapOdoo);\nconst flowPorDefecto = 'flujo_agendamiento_default';\n\n// Red de seguridad: texto a usar cuando el agente no produjo output (p. ej.\n// intención FALLBACK sin respuesta). Prioriza el fallback_message de Odoo.\n// SPEC 18: menu_enabled (Odoo) decide modo menú (SPEC 13/17) vs conversacional.\nlet menuEnabled = false;\ntry {\n  menuEnabled = $('Obtener_configuracion_agente').item.json.menu_enabled === true;\n} catch (e) {\n  menuEnabled = false;\n}\nlet fallbackTexto = menuEnabled\n  ? 'Disculpa, no entendí 🤔 ¿Puedes reformularlo? Escribe *menu* para ver las opciones.'\n  : 'Disculpa, no entendí 🤔 ¿Me lo cuentas con otras palabras? Con gusto te respondo con la información del negocio.';\ntry {\n  const fb = $('Obtener_configuracion_agente').item.json.fallback_message;\n  if (fb && typeof fb === 'string' && fb.trim()) fallbackTexto = fb.trim();\n} catch (e) {\n  // sin Obtener_configuracion_agente se usa el texto por defecto\n}\n\n// --- Sistema del menú determinista (SPEC 13) ---\n// El menú se sirve desde el system_prompt (única fuente, SPEC 03), sin IA ni RAG.\nconst systemPrompt = (() => {\n  try {\n    return $('Obtener_configuracion_agente').item.json.system_prompt || '';\n  } catch (e) {\n    return '';\n  }\n})();\n\nconst MENU_MARKER = '=== MENÚ DE OPCIONES ===';\nconst menuTexto = (() => {\n  const idx = systemPrompt.indexOf(MENU_MARKER);\n  if (idx === -1) return null;\n  const resto = systemPrompt.slice(idx + MENU_MARKER.length);\n  const fin = resto.search(/\\n=== /);\n  const seccion = (fin === -1 ? resto : resto.slice(0, fin)).trim();\n  return seccion || null;\n})();\n\nconst keywordsMenu = (() => {\n  for (const linea of systemPrompt.split('\\n')) {\n    if (linea.includes('(muestra el menú)')) {\n      const m = linea.match(/palabras clave:\\s*([^\\n→]+)/);\n      if (m) {\n        return m[1].split(',').map(k => k.trim().toLowerCase()).filter(Boolean);\n      }\n    }\n  }\n  return [];\n})();\n\nfunction tryParseJSON(rawStr) {\n  // Limpiar delimitadores markdown ```json ... ``` o ``` ... ```\n  let cleaned = rawStr.trim();\n  cleaned = cleaned.replace(/^```(?:json)?\\s*/i, '').replace(/\\s*```\\s*$/i, '').trim();\n\n  // Intento directo con string limpio\n  try {\n    return JSON.parse(cleaned);\n  } catch (e) {\n    // preparación secundaria: limpieza\n    let attempt = cleaned;\n    // eliminar prefijo \"{},\" si existe\n    attempt = attempt.replace(/^\\s*\\{\\}\\s*,\\s*/, '');\n    // eliminar comas solitarias al inicio\n    attempt = attempt.replace(/^\\s*,\\s*/, '');\n    // eliminar comas antes de cierre de objeto o array\n    attempt = attempt.replace(/,\\s*}/g, '}').replace(/,\\s*]/g, ']');\n    // si no empieza con { pero hay un } al final, añadimos '{' delante\n    if (!attempt.startsWith('{') && attempt.indexOf('}') !== -1) {\n      attempt = '{' + attempt;\n    }\n    // si no termina con } y hay una { en el string, cerramos con }\n    if (!attempt.endsWith('}') && attempt.indexOf('{') !== -1) {\n      attempt = attempt + '}';\n    }\n    // último intento de parse\n    try {\n      return JSON.parse(attempt);\n    } catch (e2) {\n      // si sigue fallando devolvemos null para indicar que no se pudo parsear\n      return null;\n    }\n  }\n}\n\nfor (const item of items) {\n  try {\n    let str = item.json.output;\n    let datosParseados = null;\n\n    // Si ya es objeto, usarlo\n    if (typeof str !== 'string' && typeof str === 'object' && str !== null) {\n      datosParseados = str;\n    } else if (typeof str === 'string') {\n      // 0) Limpiar delimitadores markdown ```json ... ``` o ``` ... ```\n      str = str.replace(/^```(?:json)?\\s*/i, '').replace(/\\s*```\\s*$/i, '').trim();\n\n      // 1) intento de parse robusto usando helper\n      // primero normalizamos backslash-u{...} como antes\n      let normalized = str.replace(/\\\\u\\{([^}]+)\\}/g, (match, inner) => {\n        const parts = inner.split(/\\\\u/);\n        let result = '';\n        for (let part of parts) {\n          if (part === '') continue;\n          result += String.fromCodePoint(parseInt(part, 16));\n        }\n        return result;\n      });\n\n      // Intento parse directo y fallback con tryParseJSON\n      datosParseados = tryParseJSON(normalized);\n\n      if (!datosParseados) {\n        // no se pudo parsear ni en el intento secundario: devolvemos item de error para debugging\n        const errorItem = {\n          json: {\n            error: 'JSON_PARSE_ERROR',\n            message: 'No se pudo extraer objeto JSON válido',\n            original: item.json.output,\n            _raw_extracted: normalized,\n            ...item.json\n          }\n        };\n        errorItem.json.flow_name = flowPorDefecto;\n        errorItem.json.output = fallbackTexto;\n        errorItem.json.text = fallbackTexto;\n        errorItem.json.content = fallbackTexto;\n        errorItem.json.tipoPregunta = 'FALLBACK';\n        nuevosItems.push(errorItem);\n        continue; // pasar al siguiente item\n      }\n    } else {\n      // tipo inválido\n      const errorItem = {\n        json: {\n          error: 'INVALID_OUTPUT_TYPE',\n          original: item.json.output,\n          ...item.json\n        }\n      };\n      errorItem.json.flow_name = flowPorDefecto;\n      errorItem.json.output = fallbackTexto;\n      errorItem.json.text = fallbackTexto;\n      errorItem.json.content = fallbackTexto;\n      errorItem.json.tipoPregunta = 'FALLBACK';\n      nuevosItems.push(errorItem);\n      continue;\n    }\n\n    // Des-nidificación defensiva: si 'output' es un string JSON con clave\n    // 'output', extraer el objeto interno y hacer merge de sus campos.\n    // Cubre desobediencia de formato de la IA (JSON anidado dentro de output).\n    if (typeof datosParseados.output === 'string' &&\n        datosParseados.output.trim().startsWith('{')) {\n      const interno = tryParseJSON(datosParseados.output);\n      if (interno && typeof interno === 'object' && interno !== null &&\n          interno.output !== undefined) {\n        datosParseados = Object.assign({}, datosParseados, interno);\n      }\n    }\n\n    // --- lógica original conservada ---\n    if (!datosParseados.tipoPregunta && datosParseados.output && typeof datosParseados.output === 'string') {\n      if (datosParseados.output.includes('Vamos a agendar tu cita') || \n          datosParseados.output.includes('Indíqueme si la atención será por medios propios')) {\n        datosParseados.tipoPregunta = 'CITA_DIRECTA';\n      }\n    }\n\n    if (datosParseados.output && typeof datosParseados.output === 'string') {\n      if (datosParseados.output.includes('Para enviarte tus resultados') || \n          datosParseados.output.includes('Foto de cédula') ||\n          datosParseados.output.includes('El estudio que necesitas')) {\n\n        datosParseados.tipoPregunta = 'RESULTADOS';\n\n        datosParseados.output = \"Hola 👋 Para ayudarte con los resultados, por favor indica el tipo de estudio:\\n\\n🔬 Si es un examen de LABORATORIO (sangre, orina, heces, etc.) responde 'Laboratorio'.\\n📷 Si es un estudio de IMÁGENES (radiografía, ecografía, mamografía, etc.) responde 'Imágenes'.\\n\\nEn unos segundos te pediré los detalles necesarios.\";\n\n        datosParseados.text = datosParseados.output;\n        datosParseados.content = datosParseados.output;\n      }\n    }\n\n    if (datosParseados.output && typeof datosParseados.output === 'string') {\n      const match = datosParseados.output.match(/^\\s*equipo_asignado:\\s*\"([^\"]*)\"\\s*$/);\n      if (match) {\n        datosParseados.equipo_asignado = match[1];\n      }\n    }\n\n    const resultado = {\n      ...item.json,\n      ...datosParseados,\n      output: datosParseados.output,\n      tipoPregunta: datosParseados.tipoPregunta || null\n    };\n\n    // Red de seguridad: si el agente devolvió output vacío (intención sin\n    // respuesta), reemplazar por el fallback para que los nodos de envío nunca\n    // reciban un body vacío que YCloud rechaza.\n    if (typeof resultado.output !== 'string' || !resultado.output.trim()) {\n      resultado.output = fallbackTexto;\n      if (!resultado.tipoPregunta || resultado.tipoPregunta === 'FALLBACK') {\n        resultado.tipoPregunta = 'FALLBACK';\n      }\n      resultado.text = fallbackTexto;\n      resultado.content = fallbackTexto;\n    }\n\n    // SPEC 18: en modo conversacional (menu_enabled=false) isMenu SIEMPRE\n    // false: nunca se envía menú interactivo ni se detecta menú en el output.\n    let isMenuValue = false;\n    if (menuEnabled) {\n      if (datosParseados.isMenu === true) {\n        isMenuValue = true;\n      } else if (datosParseados.output && typeof datosParseados.output === 'string') {\n        const texto = datosParseados.output;\n        if (texto.includes('¡Hola! 😊 Bienvenido/a') || \n            texto.includes('Para ayudarte mejor, por favor selecciona') ||\n            texto.includes('¿Qué necesitas hoy?')) {\n          isMenuValue = true;\n        }\n      }\n    }\n    resultado.isMenu = isMenuValue;\n\n    let esPreguntaSiNo = false;\n    if (datosParseados.esPreguntaSiNo === true) {\n      esPreguntaSiNo = true;\n    } else if (datosParseados.output && typeof datosParseados.output === 'string') {\n      esPreguntaSiNo = detectarSiNo(datosParseados.output);\n    }\n    resultado.esPreguntaSiNo = esPreguntaSiNo;\n\n    const equipo = resultado.equipo_asignado;\n    let flow_name = '';\n    if (typeof datosParseados.flow_name === 'string' && datosParseados.flow_name.trim()) {\n      const f = datosParseados.flow_name.trim();\n      if (f.startsWith('flujo_')) {\n        flow_name = f;\n      } else if (mapeoFlow[f]) {\n        flow_name = mapeoFlow[f];\n      }\n    }\n    resultado.flow_name = flow_name || mapeoFlow[equipo] || flowPorDefecto;\n\n    // --- Ruteo determinista del menú (SPEC 13, solo menu_enabled=true) ---\n    // Si el usuario pide menú o la intención detectada es MENU, se fuerza\n    // el texto del menú guardado (con marca) e isMenu=true. La salida de la\n    // IA se ignora para este caso. En modo conversacional (SPEC 18) el\n    // bloque se omite: la IA responde con la introducción desde el RAG.\n    const textoUsuario = (item.json.text || '').toString().toLowerCase();\n    let esMenu = datosParseados.tipoPregunta === 'MENU';\n    if (!esMenu && textoUsuario) {\n      esMenu = keywordsMenu.some(k => k && textoUsuario.includes(k));\n    }\n    // Texto ultra-corto (≤2 caracteres) → menú determinista (SPEC 14).\n    if (!esMenu && textoUsuario && textoUsuario.length <= 2) {\n      esMenu = true;\n    }\n    if (menuEnabled && esMenu && menuTexto) {\n      resultado.output = menuTexto;\n      resultado.text = menuTexto;\n      resultado.content = menuTexto;\n      resultado.isMenu = true;\n      resultado.tipoPregunta = 'MENU';\n      resultado.equipo_asignado = '';\n      resultado.flow_name = '';\n      resultado.esPreguntaSiNo = false;\n    }\n\n    nuevosItems.push({ json: resultado });\n\n  } catch (e) {\n    const errorItem = {\n      json: {\n        error: e.message,\n        original: item.json.output,\n        ...item.json\n      }\n    };\n    errorItem.json.flow_name = flowPorDefecto;\n    nuevosItems.push(errorItem);\n  }\n}\n\nreturn nuevosItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2048,
+        1776
+      ],
+      "id": "61374e4f-fc64-412b-a46e-e896f73beb45",
+      "name": "Separar_variables_en_json"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dda4884d-04e1-451c-b3af-f5a3183f2580",
+              "name": "session_id",
+              "value": "={{ $json.session_id }}",
+              "type": "string"
+            },
+            {
+              "id": "70bff820-cfc3-4071-bcaa-4478eb7828e9",
+              "name": "conversation_id",
+              "value": "={{ $('Cita_con_Equipo_asignado').item.json.conversation_id }}",
+              "type": "string"
+            },
+            {
+              "id": "d80d48b5-7d3e-4e34-bf33-cf46fa3b4e5d",
+              "name": "account_id",
+              "value": "={{ $('Cita_con_Equipo_asignado').item.json.account_id }}",
+              "type": "string"
+            },
+            {
+              "id": "d784b741-4e38-4288-9223-4974592d75fb",
+              "name": "platform",
+              "value": "={{ $('Cita_con_Equipo_asignado').item.json.platform }}",
+              "type": "string"
+            },
+            {
+              "id": "1021f53b-9c20-4d37-abf1-1622ce5bbd86",
+              "name": "text",
+              "value": "={{ $json.steps[0].nombre_mostrar }}",
+              "type": "string"
+            },
+            {
+              "id": "4046b530-a78d-4676-b4ad-f2f8f2f81919",
+              "name": "output",
+              "value": "={{ $json.steps[0].nombre_mostrar }}",
+              "type": "string"
+            },
+            {
+              "id": "0aebd45e-44c0-4633-9710-c3af2e6d9422",
+              "name": "content",
+              "value": "={{ $json.steps[0].nombre_mostrar }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3104,
+        992
+      ],
+      "id": "b8aac91f-b4d5-4c5d-bf6f-fe84747319f4",
+      "name": "Agendar_cita"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CHATWOOT_URL || 'https://chatwoot.aristosoluciones.integraia.lat' }}/api/v1/accounts/{{$json.account_id}}/conversations/{{ $json.conversation_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "api_access_token",
+              "value": "={{ $env.CHATWOOT_API_TOKEN || 'P48JVw3SsYqPwqv0OvOd6w' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"content\": {{ JSON.stringify($json.content) }}\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3312,
+        1968
+      ],
+      "id": "4994e782-4edd-4178-87eb-943894b76301",
+      "name": "Enviar_mensaje_de_IA1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CHATWOOT_URL || 'https://chatwoot.aristosoluciones.integraia.lat' }}/api/v1/accounts/{{$json.account_id}}/conversations/{{ $json.conversation_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "api_access_token",
+              "value": "={{ $env.CHATWOOT_API_TOKEN || 'P48JVw3SsYqPwqv0OvOd6w' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"content\": {{ JSON.stringify($json.content) }}\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3408,
+        1040
+      ],
+      "id": "d2ec33ab-7a7e-41ad-97ba-19e7f197aec6",
+      "name": "Enviar_mensaje_de_IA2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "890f5802-1895-46b4-bfb3-c2f44596d4ce",
+              "name": "session_id",
+              "value": "={{ $json.session_id }}",
+              "type": "string"
+            },
+            {
+              "id": "e0d55966-2cdd-436b-b684-a8b11a217a2b",
+              "name": "conversation_id",
+              "value": "={{ $json.conversation_id }}",
+              "type": "string"
+            },
+            {
+              "id": "f33e3c5f-da1a-466a-b726-e12e19fdcb0b",
+              "name": "account_id",
+              "value": "={{ $json.account_id }}",
+              "type": "string"
+            },
+            {
+              "id": "53961174-87e8-4d3c-ae50-4da02dbac3c3",
+              "name": "modo",
+              "value": "={{ $json.modo }}",
+              "type": "string"
+            },
+            {
+              "id": "dcb665ab-5283-4902-bc0f-bff04a90180f",
+              "name": "nombre_mostrar",
+              "value": "={{ $json.texto_para_usuario || $json.text || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "a40885d0-6172-4a86-a023-1ebb7acea18e",
+              "name": "platform",
+              "value": "={{ $('Obtener_Info_basica').item.json.platform || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1440,
+        2672
+      ],
+      "id": "a4581f28-4915-45d8-bd5b-a6c5c71da205",
+      "name": "tomar_parametros"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CHATWOOT_URL || 'https://chatwoot.aristosoluciones.integraia.lat' }}/api/v1/accounts/{{$json.account_id}}/conversations/{{ $json.conversation_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "api_access_token",
+              "value": "={{ $env.CHATWOOT_API_TOKEN || 'P48JVw3SsYqPwqv0OvOd6w' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"content\": {{ JSON.stringify($json.nombre_mostrar) }}\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1952,
+        1088
+      ],
+      "id": "7fd8c8dc-369f-4a6a-826d-df9dc7c020f8",
+      "name": "Enviar_mensaje_de_IA3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "menu_whatsapp_condition",
+              "leftValue": "={{\n  $json.platform === 'whatsapp' && \n  ($json.isMenu === true ||\n   (typeof $json.output === 'string' && $json.output.length > 0 &&\n    ($json.output.match(/[1-5]\\.\\s*(Precios|Servicios|Agendar|Tarjeta|Otra)/i) !== null ||\n     $json.output.includes('Bienvenido/a') ||\n     $json.output.includes('selecciona una opción'))))\n}}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2224,
+        1792
+      ],
+      "id": "32c8ad83-1853-44d9-9f02-1e338039a594",
+      "name": "¿Enviar menú interactivo?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nfor (const item of items) {\n  let phone = item.json.user_number || item.json.phone_number || item.json.session_id;\n  \n  if (!phone) {\n    item.json.phone_number_formatted = null;\n    continue;\n  }\n  \n  phone = String(phone);\n  if (!phone.startsWith('+')) {\n    phone = '+' + phone;\n  }\n  item.json.phone_number_formatted = phone;\n}\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2544,
+        1936
+      ],
+      "id": "79ca564a-ef83-4938-b2a5-a91858c03d7f",
+      "name": "Formatear número de teléfono"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/902885109570961/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAUQgN2MLxIBRTyZCJuo2KoseoO1lpeTkSP1jqnsFLLcFEBZBZBbHut1XVZBCI3VknTF0txxDfI7b0sM2qMutBL2KdI4rCUFMzufCufruousYfeR9WQwAT3nFCs6KPV7W3w7v1YGzpyyZAV1AME3BHl7ryl7anc7hoODi1BOdpglIFrDYTD1vj9souhp6cwZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"recipient_type\": \"individual\",\n  \"to\": \"{{ $json.phone_number_formatted }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"list\",\n    \"header\": {\n      \"type\": \"text\",\n      \"text\": \"🚀 IntegraIA - Automatización con Odoo CE 19\"\n    },\n    \"body\": {\n      \"text\": \"Hola! 😊 Bienvenido/a a IntegraIA (https://integraia.lat). ¿Qué necesitas hoy?\"\n    },\n    \"footer\": {\n      \"text\": \"https://integraia.lat\"\n    },\n    \"action\": {\n      \"button\": \"📋 Ver opciones\",\n      \"sections\": [\n        {\n          \"title\": \"Nuestros Servicios\",\n          \"rows\": [\n            { \"id\": \"precios\", \"title\": \"💰 Tienda Virtual\", \"description\": \"Tienda online profesional con Odoo CE 19 → https://integraia.lat\" },\n            { \"id\": \"servicios\", \"title\": \"🤖 Agentes de IA\", \"description\": \"Chatbots WhatsApp, FB, Instagram 24/7\" },\n            { \"id\": \"agendar_cita\", \"title\": \"📅 Agendar Demo\", \"description\": \"Demo interactiva o asesoría Odoo\" }\n          ]\n        },\n        {\n          \"title\": \"Infraestructura\",\n          \"rows\": [\n            { \"id\": \"tarjeta_salud\", \"title\": \"🖥️ Hosting Dedicado\", \"description\": \"Servidor, SSL, dominio y mantenimiento → https://integraia.lat\" },\n            { \"id\": \"otra_consulta\", \"title\": \"🔧 Desarrollo\", \"description\": \"Módulos, migraciones, APIs\" }\n          ]\n        },\n        {\n          \"title\": \"Información\",\n          \"rows\": [\n            { \"id\": \"horario\", \"title\": \"🕒 Soporte\", \"description\": \"Horarios y contacto\" },\n            { \"id\": \"promociones\", \"title\": \"🎉 Promociones\", \"description\": \"Ofertas y descuentos vigentes\" },\n            { \"id\": \"resultados\", \"title\": \"🧪 Resultados\", \"description\": \"Consultar resultados de estudios\" }\n          ]\n        }\n      ]\n    }\n  }\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2864,
+        2496
+      ],
+      "id": "15de6c2d-d456-47a0-844a-0d2bf05616d7",
+      "name": "Enviar menú interactivo a WhatsApp",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CHATWOOT_URL || 'https://chatwoot.aristosoluciones.integraia.lat' }}/api/v1/accounts/{{$json.account_id}}/conversations/{{ $json.conversation_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "api_access_token",
+              "value": "={{ $env.CHATWOOT_API_TOKEN || 'P48JVw3SsYqPwqv0OvOd6w' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"content\": {{ JSON.stringify($json.output) }}\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3328,
+        1424
+      ],
+      "id": "16ad9e56-ec8e-4fd6-b63d-8647c2758f13",
+      "name": "Enviar texto despues del menu"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3248,
+        2512
+      ],
+      "id": "5830816e-c6e5-471b-af56-5fad62a8b927",
+      "name": "Fin menú WhatsApp"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "menu_whatsapp_condition",
+              "leftValue": "={{\n  $json.platform === 'whatsapp' && ($json.esPreguntaSiNo === true || $json.tipoPregunta === \"ESTATICO\" || $json.tipoPregunta === \"CITA_DIRECTA\" || $json.tipoPregunta === \"RESULTADOS\")\n}}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2992,
+        1744
+      ],
+      "id": "481e8e33-1200-4931-9ce5-213a8c18f049",
+      "name": "¿Enviar menú interactivo?1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst nuevosItems = [];\n\nfor (const item of items) {\n  const tipo = item.json.tipoPregunta;\n  const outputText = item.json.output;\n  let phone = item.json.user_number || item.json.phone_number || item.json.session_id;\n\n  if (phone && !phone.startsWith('+')) {\n    phone = '+' + phone;\n  }\n\n  let botones = [];\n\n  // PRECIOS - botones Sí/No\n  if (tipo === 'PRECIOS') {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_CITA_PRECIOS\", title: \"✅ Quiero cotización\" } },\n      { type: \"reply\", reply: { id: \"CANCELAR\", title: \"❌ No, gracias\" } }\n    ];\n  }\n  // SERVICIOS - botones Sí/No\n  else if (tipo === 'SERVICIOS') {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_CITA_SERVICIOS\", title: \"✅ Sí, quiero demo\" } },\n      { type: \"reply\", reply: { id: \"CANCELAR\", title: \"❌ No, gracias\" } }\n    ];\n  }\n  // TARJETA - botones Sí/No\n  else if (tipo === 'TARJETA') {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_TARJETA\", title: \"✅ Sí, contratar\" } },\n      { type: \"reply\", reply: { id: \"CANCELAR\", title: \"❌ No, gracias\" } }\n    ];\n  }\n  // CITA_DIRECTA - botones para elegir Demo o Asesoría\n  else if (tipo === 'CITA_DIRECTA') {\n    botones = [\n      { type: \"reply\", reply: { id: \"MEDIOS_PROPIOS\", title: \"💰 Demo Chatbot\" } },\n      { type: \"reply\", reply: { id: \"SEGURO_MEDICO\", title: \"🩺 Asesoría Odoo\" } }\n    ];\n  }\n  else if (tipo === 'RESULTADOS') {\n    botones = [\n      { type: \"reply\", reply: { id: \"LABORATORIO\", title: \"🔬 Laboratorio\" } },\n      { type: \"reply\", reply: { id: \"IMAGENES\", title: \"📷 Imágenes\" } }\n    ];\n  }\n  // ESTATICO - horario, promociones, resultados (botones: Menú y Salir)\n  else if (tipo === 'ESTATICO') {\n    botones = [\n      { type: \"reply\", reply: { id: \"MENU_PRINCIPAL\", title: \"🔙 Menú\" } },\n      { type: \"reply\", reply: { id: \"SALIR\", title: \"👋 Salir\" } }\n    ];\n  }\n  // ✅ NUEVO: Si es pregunta Sí/No genérica sin tipo específico\n  else if (item.json.esPreguntaSiNo === true) {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_SI\", title: \"✅ Sí\" } },\n      { type: \"reply\", reply: { id: \"CONFIRMAR_NO\", title: \"❌ No\" } }\n    ];\n  }\n  // Si no hay tipoPregunta, no enviamos botones (se envía como texto normal)\n  else {\n    nuevosItems.push(item);\n    continue;\n  }\n\n  // Construir el payload de WhatsApp\n  const whatsappPayload = {\n    messaging_product: \"whatsapp\",\n    recipient_type: \"individual\",\n    to: phone,\n    type: \"interactive\",\n    interactive: {\n      type: \"button\",\n      body: { text: outputText },\n      action: { buttons: botones }\n    }\n  };\n\n  nuevosItems.push({\n    json: {\n      ...item.json,\n      whatsappPayload: whatsappPayload,\n      phone_number_formatted: phone\n    }\n  });\n}\n\nreturn nuevosItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3120,
+        1552
+      ],
+      "id": "a436c897-b088-412d-8bfb-4578fd393f3f",
+      "name": "Construir_botones_WhatsApp"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/902885109570961/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAUQgN2MLxIBRTyZCJuo2KoseoO1lpeTkSP1jqnsFLLcFEBZBZBbHut1XVZBCI3VknTF0txxDfI7b0sM2qMutBL2KdI4rCUFMzufCufruousYfeR9WQwAT3nFCs6KPV7W3w7v1YGzpyyZAV1AME3BHl7ryl7anc7hoODi1BOdpglIFrDYTD1vj9souhp6cwZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.whatsappPayload }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3712,
+        1856
+      ],
+      "id": "c28ffa2c-da9d-47e3-b739-e389219f6f23",
+      "name": "Enviar menú interactivo a WhatsApp1",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3808,
+        1568
+      ],
+      "id": "04f014bf-1383-46ee-8aa1-a98ec4e55e72",
+      "name": "Fin menú WhatsApp1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        960,
+        2176
+      ],
+      "typeVersion": 1,
+      "id": "b798eed7-3ec8-429a-9ff2-d7c276e27d41",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        960,
+        2176
+      ],
+      "typeVersion": 1,
+      "id": "0a22d6ad-68ca-408a-8eef-78ac5b8d92a6",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        960,
+        2176
+      ],
+      "typeVersion": 1,
+      "id": "73859aa4-cc94-46f8-947d-a968028cdbe0",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1040,
+        2256
+      ],
+      "typeVersion": 1,
+      "id": "27290b6b-172d-41bd-90c2-f82b37e44c80",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1040,
+        2256
+      ],
+      "typeVersion": 1,
+      "id": "830534e4-8eca-4332-aaee-32ee67cab296",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1040,
+        2256
+      ],
+      "typeVersion": 1,
+      "id": "72a55223-07ed-4f1e-9a80-b3a037f412d2",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## Procesa la data de entrada, y si es agendar cita con el primer paso chequea el telefono para buscar ya variables en bd y el suuario tipeee menos",
+        "height": 480,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -16,
+        2448
+      ],
+      "typeVersion": 1,
+      "id": "39803e03-604e-4ef1-95d4-33e7cb7bbccf",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CHATWOOT_URL || 'https://chatwoot.aristosoluciones.integraia.lat' }}/api/v1/accounts/{{$json.account_id}}/conversations/{{ $json.conversation_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "api_access_token",
+              "value": "={{ $env.CHATWOOT_API_TOKEN || 'P48JVw3SsYqPwqv0OvOd6w' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"content\": {{ JSON.stringify($json.output) }}\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2976,
+        2192
+      ],
+      "id": "2d894d52-dec1-40f7-b1fd-c7e166499b90",
+      "name": "Enviar_mensaje_de_IA"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.ODOO_APP_URL_20 || 'https://lead20.integraia.lat' }}/ai_chatbot_1_portal/configuracion_agente",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=\n{\n  \"text\": {{ JSON.stringify($json.text) }},\n  \"image_url\": {{ JSON.stringify($json.image_url || '') }},\n  \"session_id\": {{ JSON.stringify($json.session_id) }},\n  \"conversation_id\": {{ JSON.stringify($json.conversation_id) }},\n  \"account_id\": {{ JSON.stringify($json.account_id) }},\n  \"platform\": {{ JSON.stringify($json.platform) }},\n  \"token\": {{ JSON.stringify($env.CHATBOT_API_TOKEN || '') }}\n}",
+        "options": {
+          "timeout": 30000
+        },
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-chatbot-token",
+              "value": "={{ $env.CHATBOT_API_TOKEN || '' }}"
+            }
+          ]
+        },
+        "sendHeaders": true
+      },
+      "id": "6580d4d9-18e2-46ee-8801-cf47e3f08dbe",
+      "name": "Obtener_configuracion_agente",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        2480
+      ]
+    },
+    {
+      "parameters": {
+        "description": "Aquí puedes tomar los documentos cargados como base de información. Para responder preguntas relacionadas ",
+        "fallbackOutput": "HERRAMIENTA_RAG_INDISPONIBLE: la consulta a la base de conocimiento fallo por tiempo o red. No la reintentes mas de una vez. Responde al usuario con un problema momentaneo al consultar la informacion y ofrece que un asesor lo contacte."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        2000,
+        2016
+      ],
+      "id": "3b874abc-6130-4e80-af7a-15e96e1fc053",
+      "name": "Base_Conocimiento_RAG",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "position": [
+        2016,
+        2256
+      ],
+      "id": "53363440-cc2e-4af1-a909-6b7cc43d43d6",
+      "name": "Postgres PGVector Store",
+      "credentials": {
+        "postgres": {
+          "id": "mZRYmjEBYmgLo0sw",
+          "name": "prod-chatwoot-odoo-db19-n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2160,
+        2496
+      ],
+      "id": "c3cc0ce7-6e6c-455a-990b-988ac01abef1",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "XflpesBw28TN2BKL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        2272,
+        2144
+      ],
+      "id": "bda725a1-bbff-470a-91fb-2a7bb3796ca9",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "XflpesBw28TN2BKL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const MAX_CHARS = 950;\nconst FIELD = 'output';\n\nconst items = $input.all();\nconst out = [];\n\nconst cpLen = (s) => Array.from(s).length;\n\nfunction isInstagram(json) {\n  const platform = String(json.platform || '').toLowerCase();\n  const channel = String(json.channel || '');\n  return platform === 'instagram' || channel === 'Channel::Instagram';\n}\n\nfunction cutSentences(paragraph, max) {\n  if (cpLen(paragraph) <= max) return [paragraph];\n  const parts = paragraph.split(/(?<=[.!?])\\s+/);\n  const res = [];\n  let buf = '';\n  for (const part of parts) {\n    const cand = buf ? buf + ' ' + part : part;\n    if (cpLen(cand) <= max) { buf = cand; continue; }\n    if (buf) { res.push(buf); buf = ''; }\n    let rest = part;\n    while (cpLen(rest) > max) {\n      res.push(Array.from(rest).slice(0, max).join(''));\n      rest = Array.from(rest).slice(max).join('');\n    }\n    buf = rest;\n  }\n  if (buf) res.push(buf);\n  return res;\n}\n\nfunction splitChunks(text, max) {\n  if (cpLen(text) <= max) return [text];\n  const chunks = [];\n  let current = '';\n  const flush = () => { const t = current.trim(); if (t) chunks.push(t); };\n  for (const paragraph of text.split(/\\n{2,}/)) {\n    for (const piece of cutSentences(paragraph, max)) {\n      const cand = current ? current + '\\n\\n' + piece : piece;\n      if (cpLen(cand) <= max) { current = cand; }\n      else { flush(); current = piece; }\n    }\n  }\n  flush();\n  return chunks.length ? chunks : [text];\n}\n\nfor (const item of items) {\n  const text = item.json[FIELD];\n  if (typeof text === 'string' && isInstagram(item.json)) {\n    for (const chunk of splitChunks(text, MAX_CHARS)) {\n      out.push({ json: { ...item.json, [FIELD]: chunk } });\n    }\n  } else {\n    out.push(item);\n  }\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2704,
+        2080
+      ],
+      "id": "6c792fbe-8b88-443f-a1bb-f93c9d78db2b",
+      "name": "Trocear_Instagram_IA"
+    },
+    {
+      "parameters": {
+        "jsCode": "const MAX_CHARS = 950;\nconst FIELD = 'content';\n\nconst items = $input.all();\nconst out = [];\n\nconst cpLen = (s) => Array.from(s).length;\n\nfunction isInstagram(json) {\n  const platform = String(json.platform || '').toLowerCase();\n  const channel = String(json.channel || '');\n  return platform === 'instagram' || channel === 'Channel::Instagram';\n}\n\nfunction cutSentences(paragraph, max) {\n  if (cpLen(paragraph) <= max) return [paragraph];\n  const parts = paragraph.split(/(?<=[.!?])\\s+/);\n  const res = [];\n  let buf = '';\n  for (const part of parts) {\n    const cand = buf ? buf + ' ' + part : part;\n    if (cpLen(cand) <= max) { buf = cand; continue; }\n    if (buf) { res.push(buf); buf = ''; }\n    let rest = part;\n    while (cpLen(rest) > max) {\n      res.push(Array.from(rest).slice(0, max).join(''));\n      rest = Array.from(rest).slice(max).join('');\n    }\n    buf = rest;\n  }\n  if (buf) res.push(buf);\n  return res;\n}\n\nfunction splitChunks(text, max) {\n  if (cpLen(text) <= max) return [text];\n  const chunks = [];\n  let current = '';\n  const flush = () => { const t = current.trim(); if (t) chunks.push(t); };\n  for (const paragraph of text.split(/\\n{2,}/)) {\n    for (const piece of cutSentences(paragraph, max)) {\n      const cand = current ? current + '\\n\\n' + piece : piece;\n      if (cpLen(cand) <= max) { current = cand; }\n      else { flush(); current = piece; }\n    }\n  }\n  flush();\n  return chunks.length ? chunks : [text];\n}\n\nfor (const item of items) {\n  const text = item.json[FIELD];\n  if (typeof text === 'string' && isInstagram(item.json)) {\n    for (const chunk of splitChunks(text, MAX_CHARS)) {\n      out.push({ json: { ...item.json, [FIELD]: chunk } });\n    }\n  } else {\n    out.push(item);\n  }\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3056,
+        1968
+      ],
+      "id": "8584c7fb-020d-4435-99e8-a0a9a82b850b",
+      "name": "Trocear_Instagram_IA1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const MAX_CHARS = 950;\nconst FIELD = 'content';\n\nconst items = $input.all();\nconst out = [];\n\nconst cpLen = (s) => Array.from(s).length;\n\nfunction isInstagram(json) {\n  const platform = String(json.platform || '').toLowerCase();\n  const channel = String(json.channel || '');\n  return platform === 'instagram' || channel === 'Channel::Instagram';\n}\n\nfunction cutSentences(paragraph, max) {\n  if (cpLen(paragraph) <= max) return [paragraph];\n  const parts = paragraph.split(/(?<=[.!?])\\s+/);\n  const res = [];\n  let buf = '';\n  for (const part of parts) {\n    const cand = buf ? buf + ' ' + part : part;\n    if (cpLen(cand) <= max) { buf = cand; continue; }\n    if (buf) { res.push(buf); buf = ''; }\n    let rest = part;\n    while (cpLen(rest) > max) {\n      res.push(Array.from(rest).slice(0, max).join(''));\n      rest = Array.from(rest).slice(max).join('');\n    }\n    buf = rest;\n  }\n  if (buf) res.push(buf);\n  return res;\n}\n\nfunction splitChunks(text, max) {\n  if (cpLen(text) <= max) return [text];\n  const chunks = [];\n  let current = '';\n  const flush = () => { const t = current.trim(); if (t) chunks.push(t); };\n  for (const paragraph of text.split(/\\n{2,}/)) {\n    for (const piece of cutSentences(paragraph, max)) {\n      const cand = current ? current + '\\n\\n' + piece : piece;\n      if (cpLen(cand) <= max) { current = cand; }\n      else { flush(); current = piece; }\n    }\n  }\n  flush();\n  return chunks.length ? chunks : [text];\n}\n\nfor (const item of items) {\n  const text = item.json[FIELD];\n  if (typeof text === 'string' && isInstagram(item.json)) {\n    for (const chunk of splitChunks(text, MAX_CHARS)) {\n      out.push({ json: { ...item.json, [FIELD]: chunk } });\n    }\n  } else {\n    out.push(item);\n  }\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3264,
+        848
+      ],
+      "id": "0dc31861-32f1-46dc-87e5-108d9eabe13d",
+      "name": "Trocear_Instagram_IA2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const MAX_CHARS = 950;\nconst FIELD = 'nombre_mostrar';\n\nconst items = $input.all();\nconst out = [];\n\nconst cpLen = (s) => Array.from(s).length;\n\nfunction isInstagram(json) {\n  const platform = String(json.platform || '').toLowerCase();\n  const channel = String(json.channel || '');\n  return platform === 'instagram' || channel === 'Channel::Instagram';\n}\n\nfunction cutSentences(paragraph, max) {\n  if (cpLen(paragraph) <= max) return [paragraph];\n  const parts = paragraph.split(/(?<=[.!?])\\s+/);\n  const res = [];\n  let buf = '';\n  for (const part of parts) {\n    const cand = buf ? buf + ' ' + part : part;\n    if (cpLen(cand) <= max) { buf = cand; continue; }\n    if (buf) { res.push(buf); buf = ''; }\n    let rest = part;\n    while (cpLen(rest) > max) {\n      res.push(Array.from(rest).slice(0, max).join(''));\n      rest = Array.from(rest).slice(max).join('');\n    }\n    buf = rest;\n  }\n  if (buf) res.push(buf);\n  return res;\n}\n\nfunction splitChunks(text, max) {\n  if (cpLen(text) <= max) return [text];\n  const chunks = [];\n  let current = '';\n  const flush = () => { const t = current.trim(); if (t) chunks.push(t); };\n  for (const paragraph of text.split(/\\n{2,}/)) {\n    for (const piece of cutSentences(paragraph, max)) {\n      const cand = current ? current + '\\n\\n' + piece : piece;\n      if (cpLen(cand) <= max) { current = cand; }\n      else { flush(); current = piece; }\n    }\n  }\n  flush();\n  return chunks.length ? chunks : [text];\n}\n\nfor (const item of items) {\n  const text = item.json[FIELD];\n  if (typeof text === 'string' && isInstagram(item.json)) {\n    for (const chunk of splitChunks(text, MAX_CHARS)) {\n      out.push({ json: { ...item.json, [FIELD]: chunk } });\n    }\n  } else {\n    out.push(item);\n  }\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        1232
+      ],
+      "id": "32a4e99d-4602-4d1d-936e-e0311e55f88a",
+      "name": "Trocear_Instagram_IA3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CHATWOOT_URL || 'https://chatwoot.aristosoluciones.integraia.lat' }}/api/v1/accounts/{{ $json.account_id || $('Obtener_Info_basica').first().json.body.conversation.account_id }}/conversations/{{ $json.conversation_id || $('Obtener_Info_basica').first().json.body.conversation.id }}/toggle_status",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "api_access_token",
+              "value": "={{ $env.CHATWOOT_API_TOKEN || 'P48JVw3SsYqPwqv0OvOd6w' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"status\": \"open\"\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -976,
+        2600
+      ],
+      "id": "394dd96e-eb18-4e60-8276-4ac8baf19a76",
+      "name": "Abrir_conversacion_Chatwoot",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e8a7096e-a0e8-430f-b26c-4ce9782dc770",
+              "leftValue": "={{ $json.message_type === 'outgoing' && Number($('Entrar_ChattWoot').first().json.body.sender?.id ?? -1) !== Number($env.CHATWOOT_BOT_USER_ID || '1') ? true : false }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -768,
+        2672
+      ],
+      "id": "475eab13-61ac-426e-8fb2-f63f9a210266",
+      "name": "IF_Dueno_Humano"
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.CHATWOOT_URL || 'https://chatwoot.aristosoluciones.integraia.lat' }}/api/v1/accounts/{{ $json.account_id || $('Entrar_ChattWoot').first().json.body.conversation.account_id }}/conversations/{{ $json.conversation_id || $('Entrar_ChattWoot').first().json.body.conversation.id }}/labels",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "api_access_token",
+              "value": "={{ $env.CHATWOOT_API_TOKEN || 'P48JVw3SsYqPwqv0OvOd6w' }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -512,
+        2672
+      ],
+      "id": "b15f3525-e635-4ea5-a88d-ea5b8a5ee8de",
+      "name": "GET_Labels_Conversacion"
+    },
+    {
+      "parameters": {
+        "jsCode": "// SPEC 79: union de labels existentes + 'agente_desactivado'\nconst origen = $('Dueno_o_Bot_responde').first().json;\nconst payload = Array.isArray($json.payload) ? $json.payload : (Array.isArray($json) ? $json : []);\nconst labels = payload.filter(l => typeof l === 'string');\nif (!labels.includes('agente_desactivado')) labels.push('agente_desactivado');\nreturn [{ json: {\n  labels,\n  account_id: origen.account_id || origen.body.conversation.account_id,\n  conversation_id: origen.conversation_id || origen.body.conversation.id,\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        2672
+      ],
+      "id": "b4030770-7e4b-4c6a-8774-bc58ade9b4c3",
+      "name": "Merge_Label_Agente"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.CHATWOOT_URL || 'https://chatwoot.aristosoluciones.integraia.lat' }}/api/v1/accounts/{{ $json.account_id }}/conversations/{{ $json.conversation_id }}/labels",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "api_access_token",
+              "value": "={{ $env.CHATWOOT_API_TOKEN || 'P48JVw3SsYqPwqv0OvOd6w' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ labels: $json.labels }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        2672
+      ],
+      "id": "4ae744aa-034c-4047-9587-2727dee17d32",
+      "name": "POST_Labels"
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {
+          "text": "hola 6",
+          "session_id": "8798384251",
+          "account_id": "1",
+          "conversation_id": "171",
+          "message_type": "incoming",
+          "user_name": "integraia",
+          "user_number": null,
+          "platform": "telegram",
+          "channel": "Channel::Telegram",
+          "content": "hola 6",
+          "file_type": null,
+          "phone_number": null,
+          "image_url": "",
+          "agente_desactivado": "on"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Seteamos_variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seteamos_variables": {
+      "main": [
+        [
+          {
+            "node": "Pregunta_el_Cliente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Indentifica_canal": {
+      "main": [
+        [
+          {
+            "node": "Call 'chatbot-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'chatbot-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'chatbot-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'chatbot-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'chatbot-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'chatbot-simple_1_subflow'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configurar_IA_Responda?": {
+      "main": [
+        [
+          {
+            "node": "End1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Indentifica_canal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pregunta_el_Cliente?": {
+      "main": [
+        [
+          {
+            "node": "Configurar_IA_Responda?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Abrir_conversacion_Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dueno_o_Bot_responde",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente_Informacion_basica",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrar_ChattWoot": {
+      "main": [
+        [
+          {
+            "node": "Obtener_Info_basica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener_Info_basica": {
+      "main": [
+        [
+          {
+            "node": "Pregunta_el_Cliente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta_o_agendar_cita": {
+      "main": [
+        [
+          {
+            "node": "Obtener_configuracion_agente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "tomar_parametros",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "tomar_parametros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente_Informacion_basica",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente_Informacion_basica": {
+      "main": [
+        [
+          {
+            "node": "Separar_variables_en_json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unificar_salida": {
+      "main": [
+        [
+          {
+            "node": "¿Enviar menú interactivo?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cita_con_Equipo_asignado": {
+      "main": [
+        [
+          {
+            "node": "paso_0_inicio_agendar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unificar_salida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'chatbot-simple_1_subflow'": {
+      "main": [
+        [
+          {
+            "node": "Consulta_o_agendar_cita",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separar_variables_en_json": {
+      "main": [
+        [
+          {
+            "node": "¿Enviar menú interactivo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "paso_0_inicio_agendar": {
+      "main": [
+        [
+          {
+            "node": "Agendar_cita",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agendar_cita": {
+      "main": [
+        [
+          {
+            "node": "Trocear_Instagram_IA2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tomar_parametros": {
+      "main": [
+        [
+          {
+            "node": "Trocear_Instagram_IA3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Enviar menú interactivo?": {
+      "main": [
+        [
+          {
+            "node": "Formatear número de teléfono",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cita_con_Equipo_asignado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear número de teléfono": {
+      "main": [
+        [
+          {
+            "node": "Trocear_Instagram_IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar menú interactivo a WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Fin menú WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar texto despues del menu": {
+      "main": [
+        [
+          {
+            "node": "Fin menú WhatsApp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Indentifica_canal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Enviar menú interactivo?1": {
+      "main": [
+        [
+          {
+            "node": "Construir_botones_WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Trocear_Instagram_IA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Construir_botones_WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto despues del menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar menú interactivo a WhatsApp1": {
+      "main": [
+        [
+          {
+            "node": "Fin menú WhatsApp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener_configuracion_agente": {
+      "main": [
+        [
+          {
+            "node": "Agente_Informacion_basica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Base_Conocimiento_RAG": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente_Informacion_basica",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres PGVector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Base_Conocimiento_RAG",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Base_Conocimiento_RAG",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trocear_Instagram_IA": {
+      "main": [
+        [
+          {
+            "node": "Enviar_mensaje_de_IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trocear_Instagram_IA1": {
+      "main": [
+        [
+          {
+            "node": "Enviar_mensaje_de_IA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trocear_Instagram_IA2": {
+      "main": [
+        [
+          {
+            "node": "Enviar_mensaje_de_IA2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trocear_Instagram_IA3": {
+      "main": [
+        [
+          {
+            "node": "Enviar_mensaje_de_IA3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dueno_o_Bot_responde": {
+      "main": [
+        [
+          {
+            "node": "IF_Dueno_Humano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_Dueno_Humano": {
+      "main": [
+        [
+          {
+            "node": "GET_Labels_Conversacion",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "GET_Labels_Conversacion": {
+      "main": [
+        [
+          {
+            "node": "Merge_Label_Agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge_Label_Agente": {
+      "main": [
+        [
+          {
+            "node": "POST_Labels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "b57d7b00-80bd-449f-8a6b-033a7c2af057",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ac8b8e9b824b3711008329bf41bf68736c3261debaa6dcb0eaceede9a0a7edac"
+  },
+  "id": "rawHArcQkOt5uVmz",
+  "tags": []
+}

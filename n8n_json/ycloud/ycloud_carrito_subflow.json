@@ -1,0 +1,288 @@
+{
+  "name": "ycloud_carrito_subflow_20",
+  "nodes": [
+    {
+      "id": "trg-ew-trigger",
+      "name": "answer_ycloud_carrito_subflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        420,
+        260
+      ],
+      "typeVersion": 1.1,
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"text\": \"carrito\",\n  \"session_id\": \"123\",\n  \"account_id\": \"1\",\n  \"conversation_id\": \"7\",\n  \"platform\": \"whatsapp\",\n  \"channel\": \"whatsapp\",\n  \"user_number\": \"+584120000000\",\n  \"phone_number\": \"+584120000000\",\n  \"phone_number_formatted\": \"+584120000000\",\n  \"user_message\": \"carrito\"\n}"
+      }
+    },
+    {
+      "id": "trg-manual",
+      "name": "When clicking ‘Execute workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        420,
+        460
+      ],
+      "typeVersion": 1,
+      "parameters": {}
+    },
+    {
+      "id": "4508ec86-5573-46fc-be86-0daa7c5f1376",
+      "name": "Chatbot_cart_procesar",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        620,
+        260
+      ],
+      "parameters": {
+        "url": "={{ $env.ODOO_APP_URL_20 || 'https://lead20.integraia.lat' }}/ai_chatbot_1_portal/procesar_paso",
+        "method": "POST",
+        "options": {
+          "timeout": 30000
+        },
+        "jsonBody": "={\n  \"session_id\": {{ JSON.stringify($json.session_id || '') }},\n  \"conversation_id\": {{ JSON.stringify($json.conversation_id || '') }},\n  \"account_id\": {{ JSON.stringify($json.account_id || '') }},\n  \"platform\": \"whatsapp\",\n  \"valor\": {{ JSON.stringify($json.text || $json.user_message || '') }}\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-chatbot-token",
+              "value": "={{ $env.CHATBOT_API_TOKEN || '' }}"
+            }
+          ]
+        },
+        "sendHeaders": true
+      },
+      "typeVersion": 4.3,
+      "alwaysOutputData": true
+    },
+    {
+      "id": "3e1b54a4-f217-4563-b17e-a5e80076dfcc",
+      "name": "Unificar_salida_carrito",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        820,
+        260
+      ],
+      "parameters": {
+        "jsCode": "let original = $json; // SPEC 48: sin dead-code de nodo inexistente\nconst texto = $json.texto_para_usuario || $json.text || '';\nconst plataforma = $json.platform || original.platform || 'whatsapp';\nconst porPlataforma = $json.botones_por_plataforma || {};\n// SPEC 56: botones adaptados por canal (botones_por_plataforma[platform]),\n// con fallback a botones para nodos/Odoo sin el campo nuevo.\nconst botones = Array.isArray(porPlataforma[plataforma])\n  ? porPlataforma[plataforma].filter(Boolean).slice(0, 3)\n  : (Array.isArray($json.botones) ? $json.botones.filter(Boolean).slice(0, 3) : []);\nconst to = original.phone_number_formatted || original.user_number || original.phone_number\n  || original.session_id || $json.session_id;\nconst from = original.account_id || $json.account_id;\n// SPEC 40/57: la lista (categorias del buscador o items del carrito)\n// tiene prioridad sobre los botones — un mensaje interactivo solo\n// admite un tipo de accion.\nconst listaCat = $json.lista_carrito || $json.lista_categorias;\nconst secciones = listaCat && Array.isArray(listaCat.sections) ? listaCat.sections : [];\nlet whatsappPayload = null;\nif (secciones.length && to && from) {\n  whatsappPayload = {\n    from: from,\n    to: to,\n    type: 'interactive',\n    interactive: {\n      type: 'list',\n      body: { text: texto },\n      action: { button: listaCat.button || 'Ver categorias', sections: secciones }\n    }\n  };\n} else if (botones.length && to) {\n  whatsappPayload = {\n    from: from,\n    to: to,\n    type: \"interactive\",\n    interactive: {\n      type: \"button\",\n      body: { text: texto },\n      action: { buttons: botones.map(b => ({ type: \"reply\", reply: { id: b, title: b } })) }\n    }\n  };\n}\nconst salida = [{ json: {\n  ...original,\n  ...$json,\n  output: texto,\n  text: texto,\n  content: texto,\n  modo: $json.modo || original.modo,\n  finalizado: $json.finalizado || false,\n  imagenes: $json.imagenes || [],\n  botones,\n  whatsappPayload\n} }];\n\n// SPEC 39: un media-message por producto con imagen (catálogo/búsqueda).\n// El nodo de envío ya prefiere whatsappPayload: cada item extra envía su\n// imagen con caption, después del texto (índice + botones).\nconst imagenes = Array.isArray($json.imagenes) ? $json.imagenes : [];\nif (to && from) {\n  for (const img of imagenes) {\n    // typeof: un string (codigo viejo de Odoo) expone el metodo legacy\n    // String.prototype.link (truthy) y no debe pasar como imagen.\n    if (!img || typeof img.link !== 'string' || !img.link) continue;\n    salida.push({ json: {\n      ...original,\n      ...$json,\n      whatsappPayload: {\n        from: from,\n        to: to,\n        type: 'image',\n        image: { link: img.link, caption: img.caption || '' }\n      }\n    } });\n  }\n}\nreturn salida;"
+      },
+      "typeVersion": 2
+    },
+    {
+      "id": "ef55052d-5e96-4924-bd93-1cb83d8b15f7",
+      "name": "¿Enviar menú interactivo?1",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1020,
+        260
+      ],
+      "parameters": {
+        "options": {},
+        "conditions": {
+          "options": {
+            "version": 3,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "menu_whatsapp_condition",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "leftValue": "={{\n  $json.platform === 'whatsapp' && ($json.esPreguntaSiNo === true || $json.tipoPregunta === \"ESTATICO\" || $json.tipoPregunta === \"CITA_DIRECTA\" || $json.tipoPregunta === \"RESULTADOS\")\n}}",
+              "rightValue": true
+            }
+          ]
+        }
+      },
+      "typeVersion": 2.3
+    },
+    {
+      "id": "7c9e5e64-898a-473b-9a70-ea867148f9ca",
+      "name": "Construir_botones_WhatsApp",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1220,
+        120
+      ],
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst nuevosItems = [];\n\nfor (const item of items) {\n  const tipo = item.json.tipoPregunta;\n  const outputText = item.json.output;\n  let phone = item.json.user_number || item.json.phone_number || item.json.session_id;\n\n  if (phone && !phone.startsWith('+')) {\n    phone = '+' + phone;\n  }\n\n  let botones = [];\n\n  // PRECIOS - botones Sí/No\n  if (tipo === 'PRECIOS') {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_CITA_PRECIOS\", title: \"✅ Quiero cotización\" } },\n      { type: \"reply\", reply: { id: \"CANCELAR\", title: \"❌ No, gracias\" } }\n    ];\n  }\n  // SERVICIOS - botones Sí/No\n  else if (tipo === 'SERVICIOS') {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_CITA_SERVICIOS\", title: \"✅ Sí, quiero demo\" } },\n      { type: \"reply\", reply: { id: \"CANCELAR\", title: \"❌ No, gracias\" } }\n    ];\n  }\n  // TARJETA - botones Sí/No\n  else if (tipo === 'TARJETA') {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_TARJETA\", title: \"✅ Sí, contratar\" } },\n      { type: \"reply\", reply: { id: \"CANCELAR\", title: \"❌ No, gracias\" } }\n    ];\n  }\n  // CITA_DIRECTA - botones para elegir Demo o Asesoría\n  else if (tipo === 'CITA_DIRECTA') {\n    botones = [\n      { type: \"reply\", reply: { id: \"MEDIOS_PROPIOS\", title: \"💰 Demo Chatbot\" } },\n      { type: \"reply\", reply: { id: \"SEGURO_MEDICO\", title: \"🩺 Asesoría Odoo\" } }\n    ];\n  }\n  else if (tipo === 'RESULTADOS') {\n    botones = [\n      { type: \"reply\", reply: { id: \"LABORATORIO\", title: \"🔬 Laboratorio\" } },\n      { type: \"reply\", reply: { id: \"IMAGENES\", title: \"📷 Imágenes\" } }\n    ];\n  }\n  // ESTATICO - horario, promociones, resultados (botones: Menú y Salir)\n  else if (tipo === 'ESTATICO') {\n    botones = [\n      { type: \"reply\", reply: { id: \"MENU_PRINCIPAL\", title: \"🔙 Menú\" } },\n      { type: \"reply\", reply: { id: \"SALIR\", title: \"👋 Salir\" } }\n    ];\n  }\n  // ✅ NUEVO: Si es pregunta Sí/No genérica sin tipo específico\n  else if (item.json.esPreguntaSiNo === true) {\n    botones = [\n      { type: \"reply\", reply: { id: \"CONFIRMAR_SI\", title: \"✅ Sí\" } },\n      { type: \"reply\", reply: { id: \"CONFIRMAR_NO\", title: \"❌ No\" } }\n    ];\n  }\n  // Si no hay tipoPregunta, no enviamos botones (se envía como texto normal)\n  else {\n    nuevosItems.push(item);\n    continue;\n  }\n\n  // Construir el payload de WhatsApp\n  const whatsappPayload = {\n    messaging_product: \"whatsapp\",\n    recipient_type: \"individual\",\n    to: phone,\n    type: \"interactive\",\n    interactive: {\n      type: \"button\",\n      body: { text: outputText },\n      action: { buttons: botones }\n    }\n  };\n\n  nuevosItems.push({\n    json: {\n      ...item.json,\n      whatsappPayload: whatsappPayload,\n      phone_number_formatted: phone\n    }\n  });\n}\n\nreturn nuevosItems;"
+      },
+      "typeVersion": 2
+    },
+    {
+      "id": "bccfdb26-0ba4-4ba8-bb99-0f8c459a3e17",
+      "name": "Enviar texto despues del menu",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1420,
+        100
+      ],
+      "parameters": {
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "method": "POST",
+        "options": {
+          "timeout": 30000
+        },
+        "jsonBody": "={\n  \"from\": \"{{ $json.account_id }}\",\n  \"to\": \"{{ $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id || $('Obtener_Info_basica').first().json.user_number }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($json.output) }}\n  }\n}",
+        "sendBody": true,
+        "sendHeaders": true,
+        "specifyBody": "json",
+        "headerParameters": {
+          "parameters": []
+        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth"
+      },
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cD4Us3WKlSTj5nq5",
+          "name": "YCloud API (SPEC48)"
+        }
+      }
+    },
+    {
+      "id": "3da94741-9a98-428a-89bd-817533312a3b",
+      "name": "Fin menú WhatsApp1",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        1620,
+        120
+      ],
+      "parameters": {},
+      "typeVersion": 1
+    },
+    {
+      "id": "55c47134-8789-4393-ba74-c45207d8cd02",
+      "name": "Enviar_mensaje_de_IA1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1220,
+        420
+      ],
+      "parameters": {
+        "url": "https://api.ycloud.com/v2/whatsapp/messages",
+        "method": "POST",
+        "options": {
+          "timeout": 30000
+        },
+        "jsonBody": "={{ $json.whatsappPayload\n  ? JSON.stringify($json.whatsappPayload)\n  : JSON.stringify({\n      from: $json.account_id,\n      to: $json.phone_number_formatted || $json.user_number || $json.phone_number || $json.session_id,\n      type: \"text\",\n      text: { body: $json.content }\n    }) }}",
+        "sendBody": true,
+        "sendHeaders": true,
+        "specifyBody": "json",
+        "headerParameters": {
+          "parameters": []
+        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth"
+      },
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cD4Us3WKlSTj5nq5",
+          "name": "YCloud API (SPEC48)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "answer_ycloud_carrito_subflow": {
+      "main": [
+        [
+          {
+            "node": "Chatbot_cart_procesar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Chatbot_cart_procesar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chatbot_cart_procesar": {
+      "main": [
+        [
+          {
+            "node": "Unificar_salida_carrito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unificar_salida_carrito": {
+      "main": [
+        [
+          {
+            "node": "¿Enviar menú interactivo?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Enviar menú interactivo?1": {
+      "main": [
+        [
+          {
+            "node": "Construir_botones_WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar_mensaje_de_IA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Construir_botones_WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto despues del menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar texto despues del menu": {
+      "main": [
+        [
+          {
+            "node": "Fin menú WhatsApp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "active": false,
+  "versionId": "50be0053-658d-4467-956f-254d785ff3c9",
+  "id": "c0b40d4402d2418baf47f1d1"
+}

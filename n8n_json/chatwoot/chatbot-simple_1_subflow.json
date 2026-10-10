@@ -1,0 +1,974 @@
+{
+  "name": "chatbot-simple_1_subflow_20",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -2128,
+        1360
+      ],
+      "id": "98286a7a-f0e6-4840-b83a-fbd9c718aaae",
+      "name": "Audio_a_Texto_whatsapp",
+      "credentials": {
+        "openAiApi": {
+          "id": "SynY9HmZH2SsZkWD",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f85334e7-e910-4938-8c4b-4555f55c7ba0",
+              "name": "text",
+              "value": "={{ $json.text || $json.image_url}}",
+              "type": "string"
+            },
+            {
+              "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "name": "session_id",
+              "value": "={{ $json.session_id }}",
+              "type": "string"
+            },
+            {
+              "id": "image_url_passed",
+              "name": "image_url",
+              "value": "={{ $json.image_url || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "1af7f04d-4a46-4b3d-930a-4cf8dcd2314e",
+              "name": "platform",
+              "value": "={{ $json.platform }}",
+              "type": "string"
+            },
+            {
+              "id": "d6f22467-af6c-493b-a7b3-54389897f457",
+              "name": "account_id",
+              "value": "={{ $json.account_id }}",
+              "type": "string"
+            },
+            {
+              "id": "a49a0e8c-4a5c-4e96-a135-dec725ea4440",
+              "name": "conversation_id",
+              "value": "={{ $json.conversation_id }}",
+              "type": "string"
+            },
+            {
+              "id": "700afea9-14f5-4411-a461-4ff98e82641a",
+              "name": "platform",
+              "value": "={{ $json.platform }}",
+              "type": "string"
+            },
+            {
+              "id": "4c7a2d7e-bf8d-4ee1-ae36-0d2f66ab9de0",
+              "name": "message_type",
+              "value": "={{ $json.message_type }}",
+              "type": "string"
+            },
+            {
+              "id": "69c0f466-92ce-470e-a57d-ee89508917c5",
+              "name": "user_name",
+              "value": "={{$json.user_name}}",
+              "type": "string"
+            },
+            {
+              "id": "9d881dce-816c-4e57-8b8e-28a6a9264112",
+              "name": "user_number",
+              "value": "={{$json.user_number}}",
+              "type": "string"
+            },
+            {
+              "id": "0c7de2ed-9cd7-4b8a-b0a6-e659cebd24c0",
+              "name": "channel",
+              "value": "={{ $json.platform }}",
+              "type": "string"
+            },
+            {
+              "id": "b7a1ff32-7e75-4f0d-bff5-55205b1f931a",
+              "name": "content",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "512a0989-8d83-4860-9a4a-9476f79a72e8",
+              "name": "file_type",
+              "value": "={{$json.file_type}}",
+              "type": "string"
+            },
+            {
+              "id": "4d72af90-c178-40ba-90bb-d884c4c7416d",
+              "name": "phone_number",
+              "value": "={{$json.phone_number}}",
+              "type": "string"
+            },
+            {
+              "id": "fc396010-81ec-4e64-b8e6-83d0a2699b8a",
+              "name": "user_message",
+              "value": "={{$json.user_message}}",
+              "type": "string"
+            },
+            {
+              "id": "a83e9cdd-ba56-4af9-9e5e-d0b21473d0ff",
+              "name": "agente_desactivado",
+              "value": "={{$json.agente_desactivado}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -496,
+        1392
+      ],
+      "id": "32412ef9-a887-4d24-ac15-064ab0731339",
+      "name": "Preparar_Input_AI"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.content}}",
+                    "rightValue": "true",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "4313ad77-8015-436a-a40d-3ef7cab78263"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "37f80664-6420-4c2b-b965-b65ec4656310",
+                    "leftValue": "={{ $json.file_type === 'audio'}}",
+                    "rightValue": "audio",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "bd0fe7e7-3a63-4016-bbde-90cd552598f1",
+                    "leftValue": "={{ $json.file_type === 'image'}}",
+                    "rightValue": "image",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -2528,
+        1344
+      ],
+      "id": "e3645983-1933-4082-b71b-1c2036245fe1",
+      "name": "Texto_o_Audio?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "uuid1",
+              "name": "text",
+              "value": "={{ $json.text || ''}}",
+              "type": "string"
+            },
+            {
+              "id": "uuid2",
+              "name": "session_id",
+              "value": "={{ $json.session_id }}",
+              "type": "string"
+            },
+            {
+              "id": "uuid3",
+              "name": "account_id",
+              "value": "={{ $json.account_id }}",
+              "type": "string"
+            },
+            {
+              "id": "uuid4",
+              "name": "conversation_id",
+              "value": "={{ $json.conversation_id }}",
+              "type": "string"
+            },
+            {
+              "id": "uuid5",
+              "name": "platform",
+              "value": "whatsapp",
+              "type": "string"
+            },
+            {
+              "id": "image_url_field",
+              "name": "image_url",
+              "value": "={{ $json.image_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2128,
+        1520
+      ],
+      "id": "7d6e2e3a-54b7-4e99-902f-1e39ce99dda9",
+      "name": "Procesar_Imagen_whatsapp"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "extract-text",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "extract-image-url",
+              "name": "image_url",
+              "value": "={{ $json.image_url || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "954d8f18-e7df-4531-90eb-584acf6d054c",
+              "name": "session_id",
+              "value": "={{ $('Texto_o_Audio?').item.json.session_id }}",
+              "type": "string"
+            },
+            {
+              "id": "d905e1d7-dcf3-433f-b6f5-3f542b73c848",
+              "name": "account_id",
+              "value": "={{ $('Texto_o_Audio?').item.json.account_id }}",
+              "type": "string"
+            },
+            {
+              "id": "5f67b3ca-a17a-46bc-b22d-9c8ed16328d3",
+              "name": "conversation_id",
+              "value": "={{ $('Texto_o_Audio?').item.json.conversation_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1968,
+        1360
+      ],
+      "id": "89097ff3-3bc6-49f9-a3f7-b5ecd9ceb5b3",
+      "name": "Extraer_Texto_Audio"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "text",
+        "key": "={{ $json.session_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1152,
+        1024
+      ],
+      "id": "5eea2f2d-6d61-4a1d-9694-076e7b1a9a77",
+      "name": "Get_buffer_data",
+      "credentials": {
+        "redis": {
+          "id": "GsXqpDjFeodKzf4H",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $json.session_id }}",
+        "messageData": "={{$json.text}}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1632,
+        1024
+      ],
+      "id": "be31c3ac-a6b8-4b01-ba03-32ee83fd268c",
+      "name": "Buffer",
+      "credentials": {
+        "redis": {
+          "id": "GsXqpDjFeodKzf4H",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1376,
+        1024
+      ],
+      "id": "ce330014-e98d-49d1-aecb-90875d2c3df4",
+      "name": "Wait",
+      "webhookId": "d7bd6fc5-bbb3-451a-bbb4-b01a45635946"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "06942dbe-1fd7-4bae-b8fb-97cec3b5ed14",
+              "leftValue": "={{ $json.text ? $json.text.last() : '' }}",
+              "rightValue": "={{ $('Wait').item.json.text }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -928,
+        1024
+      ],
+      "id": "f34f6773-9613-4f4a-a8f7-7fd8ac15635c",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        1152
+      ],
+      "id": "590d4664-f17b-48ef-8592-bcda993c4299",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1856,
+        1024
+      ],
+      "id": "520df6ab-b735-4f3e-a59d-f4f5b1f60f3e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ $('Buffer').item.json.session_id }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        816
+      ],
+      "id": "c4d1a590-47bb-47cb-aa96-00d570b69f07",
+      "name": "Borrar_mensajes_buffer",
+      "credentials": {
+        "redis": {
+          "id": "GsXqpDjFeodKzf4H",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "87d8bec9-6edd-4d7d-9c57-bb9ae6ff754f",
+              "name": "text",
+              "value": "={{ $('Get_buffer_data').item.json.text.map(item => Array.isArray(item) ? item.join('\\n') : item).join(',') }}",
+              "type": "string"
+            },
+            {
+              "id": "0ce2eaa6-9b19-45cf-823e-f2aab0c8af45",
+              "name": "session_id",
+              "value": "={{ $('Texto_o_Audio?').item.json.session_id }}",
+              "type": "string"
+            },
+            {
+              "id": "100f120e-da0f-42b0-ad99-0300e8d82216",
+              "name": "account_id",
+              "value": "={{ $('Texto_o_Audio?').item.json.account_id }}",
+              "type": "string"
+            },
+            {
+              "id": "bc8acf8d-31f1-461c-bbab-e45e4169c9b4",
+              "name": "conversation_id",
+              "value": "={{ $('Texto_o_Audio?').item.json.conversation_id }}",
+              "type": "string"
+            },
+            {
+              "id": "bd48bd51-341d-4292-adef-fc7c0316b54f",
+              "name": "message_type",
+              "value": "={{ $('Texto_o_Audio?').item.json.message_type }}",
+              "type": "string"
+            },
+            {
+              "id": "eae6bd01-42f3-409b-88c3-f100d02d8884",
+              "name": "user_name",
+              "value": "={{ $('Texto_o_Audio?').item.json.user_name }}",
+              "type": "string"
+            },
+            {
+              "id": "0ef35dab-5685-426b-ad56-9f523b228322",
+              "name": "user_number",
+              "value": "={{ $('Texto_o_Audio?').item.json.user_number }}",
+              "type": "string"
+            },
+            {
+              "id": "006894ab-1a68-4638-9704-d1a2f703b6f8",
+              "name": "platform",
+              "value": "={{ $('Texto_o_Audio?').item.json.platform }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -816,
+        816
+      ],
+      "id": "b85eff6a-7fbd-48c9-8bad-3d75713278f9",
+      "name": "Agrupar_texto_acumulado_resto_variables_enviar"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.ODOO_APP_URL_20 || 'https://lead20.integraia.lat' }}/ai_chatbot_1_portal/procesar_paso",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "session_id",
+              "value": "={{ $json.session_id }}"
+            },
+            {
+              "name": "account_id",
+              "value": "={{ $json.account_id }}"
+            },
+            {
+              "name": "conversation_id",
+              "value": "={{ $json.conversation_id }}"
+            },
+            {
+              "name": "valor",
+              "value": "={{ $json.text }}"
+            },
+            {
+              "name": "platform",
+              "value": "={{ $json.platform }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        },
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-chatbot-token",
+              "value": "={{ $env.CHATBOT_API_TOKEN || '' }}"
+            }
+          ]
+        },
+        "sendHeaders": true
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -288,
+        1392
+      ],
+      "id": "c521a950-d890-4143-aa75-9791b6ebd2d7",
+      "name": "Consultar_estado_Odoo",
+      "alwaysOutputData": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -256,
+        1120
+      ],
+      "id": "62faf91c-b791-4fb2-b2b0-2e4cf49f3f42",
+      "name": "Combinar_entrada_session_odoo",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -832,
+        1280
+      ],
+      "id": "56bf530b-3af6-4f85-8233-17e46e16fbaa",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b9b41b4-ef98-4699-80eb-24e70dbee117",
+              "name": "text",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "0f98afd1-e2e6-4c4d-9e9f-6e38c87694c6",
+              "name": "session_id",
+              "value": "={{ $json.session_id }}",
+              "type": "string"
+            },
+            {
+              "id": "9cbd2d29-4e32-46fd-bbea-88317ec7681d",
+              "name": "account_id",
+              "value": "={{ $json.account_id }}",
+              "type": "string"
+            },
+            {
+              "id": "ddcd14fb-bfd1-4f23-a0e0-7d0fa54e8719",
+              "name": "conversation_id",
+              "value": "={{ $json.conversation_id }}",
+              "type": "string"
+            },
+            {
+              "id": "9052a8a2-5a39-4b6f-a44f-728e2e7c2c41",
+              "name": "message_type",
+              "value": "={{ $json.message_type }}",
+              "type": "string"
+            },
+            {
+              "id": "c76e6bbf-22cf-4dd8-ae67-49c5801c5be1",
+              "name": "user_name",
+              "value": "={{ $json.user_name }}",
+              "type": "string"
+            },
+            {
+              "id": "b16fbd53-b6a3-4e0b-ac12-01912379a2fc",
+              "name": "user_number",
+              "value": "={{ $json.user_number }}",
+              "type": "string"
+            },
+            {
+              "id": "5e7f1bef-2e33-448d-b2dd-8aa060685c18",
+              "name": "user_message",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "image_url_assignment",
+              "name": "image_url",
+              "value": "={{ $json.image_url || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "cd2eb5de-c51c-4890-8f5c-d333c70ea366",
+              "name": "platform",
+              "value": "={{ $json.platform }}",
+              "type": "string"
+            },
+            {
+              "id": "02590fd2-331a-4e3c-bd8b-5b23fe1645b8",
+              "name": "channel",
+              "value": "={{ $json.channel }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2416,
+        1008
+      ],
+      "id": "0c0df776-c29b-46d5-9b94-c6dd3889e324",
+      "name": "Obtener_Info"
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"text\": \"quiero una cita\",\n  \"session_id\": \"123\",\n  \"account_id\": \"1\",\n  \"conversation_id\": \"7\",\n  \"message_type\": \"text\",\n  \"user_name\": \"\",\n  \"user_number\": \"\",\n  \"platform\": \"whatsapp\",\n  \"channel\": \"whatsapp\",\n  \"content\": \"quiero una cita\",\n  \"file_type\": null,\n  \"phone_number\": null,\n  \"user_message\": \"quiero una cita\",\n  \"image_url\": \"image_url\",\n  \"agente_desactivado\": false\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2704,
+        1360
+      ],
+      "id": "0f06394e-a8f7-47bf-b1aa-9ea48c648ec0",
+      "name": "answer_chatbot_sdimple_0"
+    },
+    {
+      "parameters": {
+        "jsCode": "// =============================================\n// UNIR DATOS DE AMBOS NODOS - FORMATO ESPECÍFICO\n// =============================================\n\n// 1. Obtener datos de Preparar_Input_AI (primer elemento del merge)\nconst datosPrepararInput = $input.all()[0]?.json || {};\n\n// 2. Obtener datos de Consultar_estado_Odoo (segundo elemento del merge)\n// La respuesta de Odoo viene como array: [{...}]\nlet datosOdoo = $input.all()[1]?.json;\nif (Array.isArray(datosOdoo) && datosOdoo.length > 0) {\n    datosOdoo = datosOdoo[0];\n} else {\n    datosOdoo = datosOdoo || {};\n}\n\nconsole.log(\"📥 DATOS DE ODOO (crudo):\", JSON.stringify($input.all()[1]?.json, null, 2));\nconsole.log(\"📥 DATOS DE ODOO (procesado):\", JSON.stringify(datosOdoo, null, 2));\n\n// 3. Extraer el estado_anterior - AHORA SE LLAMA \"estado\" en lugar de \"debug_estado_nuevo\"\nconst estado_anterior = datosOdoo.estado || null;\nconst modoOdoo = estado_anterior?.modo || datosOdoo.modo || null;\nconst pasoOdoo = estado_anterior?.paso || datosOdoo.paso || null;\nconst tipo_dato = estado_anterior?.tipo_dato || datosOdoo.tipo_dato || null\nconst es_requerido = estado_anterior?.es_requerido || datosOdoo.es_requerido || null\nconst mensaje_prompt = estado_anterior?.mensaje_prompt || datosOdoo.mensaje_prompt || null\nconst nombre_mostrar = estado_anterior?.nombre_mostrar || datosOdoo.nombre_mostrar || null\n\n\n\n// 4. Crear el resultado en el formato EXACTO solicitado\nconst resultadoFinal = {\n    // Campos de Preparar_Input_AI\n    text: datosPrepararInput.text || \"0\",\n    session_id: datosPrepararInput.session_id || \"\",\n    image_url: datosPrepararInput.image_url || \"\",\n    platform: datosPrepararInput.platform || \"whatsapp\",\n    account_id: datosPrepararInput.account_id || \"\",\n    conversation_id: datosPrepararInput.conversation_id || \"\",\n    \n    // Campos de Odoo (estado_anterior completo)\n    estado_anterior: estado_anterior,\n    \n    // Campos adicionales de Odoo (modo y paso al nivel raíz también)\n    modo: modoOdoo,\n    paso: pasoOdoo,\n\n    tipo_dato: tipo_dato,\n    es_requerido: es_requerido,\n    mensaje_prompt: mensaje_prompt,\n    nombre_mostrar: nombre_mostrar,\n    // Datos paciente para fácil acceso\n    datos_paciente: estado_anterior?.datos_paciente || {},\n    texto_para_usuario: textoRespuesta\n};\n\n// SPEC 19: normalizar texto de Odoo. MENU_PRINCIPAL sin sesión activa\n// → texto vacío: el saludo conversacional lo sirve el workflow principal.\nlet textoRespuesta = datosOdoo.texto_para_usuario || '';\nif (modoOdoo === 'MENU_PRINCIPAL') {\n    textoRespuesta = '';\n}\n\n// 5. Si estado_anterior es null, crear estructura básica\nif (!estado_anterior) {\n    resultadoFinal.estado_anterior = {\n        modo: datosOdoo.modo || null,\n        paso: datosOdoo.paso || null,\n        datos_paciente: {},\n        timestamp: null\n    };\n}\n\nconsole.log(\"✅ RESULTADO FINAL:\");\nconsole.log(JSON.stringify(resultadoFinal, null, 2));\n\nreturn [{ json: resultadoFinal }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        1120
+      ],
+      "id": "03b8aa95-7cf5-46f1-b8ae-0d71755129d6",
+      "name": "Recuperar_paso",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.image_url }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2304,
+        1360
+      ],
+      "id": "222ed5dc-3c45-407c-b7d5-17abbbdb417c",
+      "name": "Obtenemos_imagen",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 3000
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {
+          "text": "ghhd",
+          "session_id": "584142711347",
+          "account_id": "1",
+          "conversation_id": "53",
+          "message_type": "incoming",
+          "user_name": "integraia",
+          "user_number": "+584142711347",
+          "platform": "whatsapp"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Audio_a_Texto_whatsapp": {
+      "main": [
+        [
+          {
+            "node": "Extraer_Texto_Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Texto_o_Audio?": {
+      "main": [
+        [
+          {
+            "node": "Obtener_Info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Obtenemos_imagen",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Procesar_Imagen_whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar_Imagen_whatsapp": {
+      "main": [
+        [
+          {
+            "node": "Preparar_Input_AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer_Texto_Audio": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Preparar_Input_AI": {
+      "main": [
+        [
+          {
+            "node": "Consultar_estado_Odoo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buffer": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get_buffer_data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_buffer_data": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Agrupar_texto_acumulado_resto_variables_enviar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Buffer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Borrar_mensajes_buffer": {
+      "main": [
+        [
+          {
+            "node": "Preparar_Input_AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agrupar_texto_acumulado_resto_variables_enviar": {
+      "main": [
+        [
+          {
+            "node": "Borrar_mensajes_buffer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combinar_entrada_session_odoo": {
+      "main": [
+        [
+          {
+            "node": "Recuperar_paso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener_Info": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Preparar_Input_AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "answer_chatbot_sdimple_0": {
+      "main": [
+        [
+          {
+            "node": "Texto_o_Audio?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtenemos_imagen": {
+      "main": [
+        [
+          {
+            "node": "Audio_a_Texto_whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "a9556b97-2d29-4b2e-a671-8b509ec131e4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ac8b8e9b824b3711008329bf41bf68736c3261debaa6dcb0eaceede9a0a7edac"
+  },
+  "id": "Er44fSL1mNP20oKt",
+  "tags": []
+}
