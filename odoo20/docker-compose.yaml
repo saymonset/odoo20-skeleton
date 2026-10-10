@@ -41,8 +41,8 @@ services:
     volumes:
       - "./v20-leads/odoo-web-data:/var/lib/odoo"
       - "./v20-leads/config:/etc/odoo"
-      - "/home/odoo/lead/modulos_odoo_20/shared/extra/20.0:/opt/odoo/custom-addons/extra"
-      - "/home/odoo/lead/modulos_odoo_20/shared/oca/20.0:/opt/odoo/custom-addons/oca"
+      - "/home/odoo/lead20/modulos_odoo_20/shared/extra/20.0:/opt/odoo/custom-addons/extra"
+      - "/home/odoo/lead20/modulos_odoo_20/shared/oca/20.0:/opt/odoo/custom-addons/oca"
       - "./v20-leads/logs:/var/log/odoo"
     environment:
       DB_HOST: db-leads
